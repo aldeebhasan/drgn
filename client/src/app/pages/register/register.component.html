@@ -1,0 +1,27 @@
+<div class="h-screen  flex justify-center items-center bg-gray-100">
+  <div class="py-12 px-4 w-96 bg-white rounded-md shadow-2xl">
+    <div class="h-fit pb-6 relative" id="form">
+      <h2 class="mb-4 text-2xl font-bold dark:text-white">Ready to Get Started?</h2>
+      <form id="contactForm" [formGroup]="form" (ngSubmit)="submitForm()">
+        <div class="mb-6">
+          <div class="mx-0 mb-1 sm:mb-4">
+            <div class="mx-0 mb-1 sm:mb-4">
+              <input
+                type="text"
+                formControlName="name"
+                autocomplete="given-name"
+                placeholder="Your name"
+                class="mb-2 w-full text-gray-600 rounded-md border  py-2 pl-2 pr-4 shadow-md sm:mb-0 focus:ring-2 focus:outline-none focus:ring-yellow-400"
+              />
+              <div *ngIf="form?.get('name')?.invalid && form?.get('name')?.touched" class="text-red-600">Name is required.</div>
+            </div>
+          </div>
+        </div>
+        <div class="text-center">
+          <button type="submit" class="w-full bg-indigo-500 text-white px-6 py-3 font-xl rounded-xl sm:mb-0">Register</button>
+        </div>
+      </form>
+
+    </div>
+  </div>
+</div>
