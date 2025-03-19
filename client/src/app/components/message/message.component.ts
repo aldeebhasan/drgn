@@ -10,4 +10,12 @@ import { CommonModule } from '@angular/common';
 export class MessageComponent {
   @Input() message: Message = new Message();
 
+  symbol(name: string | undefined): string {
+    return name?.slice(0, 2).toUpperCase() || 'KW';
+  }
+
+  bgColor(color: string | undefined) {
+    return 'bg-' + color + '-500 text-white';
+  }
+
 }

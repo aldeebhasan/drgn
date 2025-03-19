@@ -1,12 +1,12 @@
 <!-- Sidebar -->
-<div class="bg-white border-r border-gray-300">
+<div class="bg-gray-50 border-r border-gray-300 flex flex-col h-screen">
   <!-- Sidebar Header -->
   <header class="p-4 border-b border-gray-300 flex justify-between items-center bg-indigo-600 text-white">
     <h1 class="text-2xl font-semibold">DRNG DRGN</h1>
   </header>
 
   <!-- Contact List -->
-  <div class="overflow-y-auto h-screen p-3 mb-9 pb-20">
+  <div class="overflow-y-auto h-full p-3 mb-9 pb-20">
     <div
       *ngFor="let chat of chats"
       class="flex items-center mb-4 cursor-pointer hover:bg-gray-100 p-2 rounded-md">
@@ -19,5 +19,9 @@
       </div>
     </div>
 
+  </div>
+
+  <div class="px-8 py-4 border-b border-gray-300 flex justify-between items-center ">
+    <button type="submit" (click)="logout()" class="w-full bg-red-500 text-white px-6 py-2 font-xl rounded-xl sm:mb-0 cursor-pointer">Logout ({{user?.name}})</button>
   </div>
 </div>

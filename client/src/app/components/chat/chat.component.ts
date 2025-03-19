@@ -1,9 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Message } from '../../shared/models/message.model';
 import { User } from '../../shared/models/user.model';
 import { MessageComponent } from '../message/message.component';
+import { AuthService } from '../../shared/services/auth.service';
+import { CookieService } from 'ngx-cookie-service';
 
 @Component({
   selector: 'app-chat',
@@ -11,9 +13,9 @@ import { MessageComponent } from '../message/message.component';
   imports: [CommonModule, FormsModule, MessageComponent],
   templateUrl: './chat.component.html',
 })
-export class ChatComponent {
+export class ChatComponent implements OnInit {
   audio?: HTMLAudioElement;
-  sender: User = new User('1', 'Hasan Deeb');
+  sender?: User;
   message: Message = {
     id: '1',
     parts: [{
@@ -30,12 +32,16 @@ export class ChatComponent {
   messages: Array<Message> = [this.message, this.message]; // Array to store messages
   newMessage: string = ''; // Input field value
 
-  constructor() {
+  constructor(private authService: AuthService) {
+
     this.audio = new Audio();
     this.audio.src = '/assets/beep.mp3';
     this.audio.load();
   }
 
+  ngOnInit() {
+    this.sender = this.authService.user();
+  }
 
   // Send a text message
   sendTextMessage() {
