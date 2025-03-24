@@ -6,5 +6,5 @@ export class Message {
   parts: Array<Part> = [];
   sender?: User;
   createdAt?: string;
-  isLocal: boolean = true;
+  type?: string = "user";
 }

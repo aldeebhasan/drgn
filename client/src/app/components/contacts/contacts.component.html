@@ -1,7 +1,10 @@
 <!-- Sidebar -->
 <div class="bg-gray-50 border-r border-gray-300 flex flex-col h-screen">
   <!-- Sidebar Header -->
-  <header class="p-4 border-b border-gray-300 flex justify-between items-center bg-indigo-600 text-white">
+  <header
+    class="p-4 border-b border-gray-300 flex justify-between items-center bg-indigo-600 text-white"
+  [ngStyle] = "{'background-color' : user?.color || '#5850EC'}"
+  >
     <h1 class="text-2xl font-semibold">DRNG DRGN</h1>
   </header>
 

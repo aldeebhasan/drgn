@@ -3,8 +3,9 @@ import { Chat } from '../../shared/models/chat.model';
 import { CommonModule } from '@angular/common';
 import { CookieService } from 'ngx-cookie-service';
 import { Router } from '@angular/router';
-import { AuthService } from '../../shared/services/auth.service';
+import { AuthService } from '../../services/auth.service';
 import { User } from '../../shared/models/user.model';
+import { ChatService } from '../../services/chat.service';
 
 @Component({
   selector: 'app-contacts',
@@ -16,7 +17,7 @@ export class ContactsComponent implements OnInit {
   chats: Chat[] = [new Chat('comunity', 'Comuntiy')];
   user?: User;
 
-  constructor(private router: Router, private authService: AuthService) {
+  constructor(private authService: AuthService, private chatService: ChatService, private router: Router) {
   }
 
   ngOnInit() {
@@ -25,6 +26,7 @@ export class ContactsComponent implements OnInit {
 
   logout() {
     this.authService.logout();
+    this.chatService.leaveChat(this.user);
     this.router.navigateByUrl('register');
   }
 }

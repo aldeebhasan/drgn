@@ -1,28 +1,47 @@
-<div class="flex max-w-7/12" [ngClass]="{'flex-row-reverse':message.isLocal}">
-  <div class="w-9 h-9 rounded-full flex items-center justify-center mx-2">
-    <div
-      class=" size-8 rounded-full flex items-center justify-center text-white"
-      [ngClass]="!message.isLocal ? 'bg-gray-600' : 'bg-indigo-500'"
-    >
-      {{symbol(message.sender?.name)}}
-    </div>
-  </div>
-  <div
-    class="flex flex-col w-full  rounded-lg p-3 gap-3"
-    [ngClass]="!message.isLocal ? 'bg-gray-100' : bgColor(message.sender?.color)"
-  >
-    <div class="flex justify-between text-sm gap-2.5">
-      <p class=" font-bold"> {{message.sender?.name}}</p>
-      <p> {{message.createdAt}}</p>
-    </div>
+<div class="flex w-full justify-center"
+     *ngIf="message.type === 'system';else messageTemplate"
+>
+  <div class="flex  w-6/12 bg-gray-200 justify-center  rounded-xl p-1">
     <div *ngFor="let part of message.parts">
       <img *ngIf="part.type === 'image'" [src]="part.content" class="w-40" [alt]="part.id" />
       <p *ngIf="part.type === 'text'">{{part.content}}</p>
       <a *ngIf="part.type === 'link'"
          target="_blank"
-         [ngClass]="!message.isLocal ? 'text-indigo-700 hover:text-indigo-400' : 'text-gray-200 hover:text-gray-50'"
+         [ngClass]="!isLocal() ? 'text-indigo-700 hover:text-indigo-400' : 'text-gray-200 hover:text-gray-50'"
          [href]="part.content">{{part.content}}</a>
     </div>
-
   </div>
 </div>
+
+<ng-template #messageTemplate>
+  <div class="flex max-w-7/12" [ngClass]="{'flex-row-reverse':isLocal()}">
+    <div class="w-9 h-9 rounded-full flex items-center justify-center mx-2">
+      <div
+        class=" size-8 rounded-full flex items-center justify-center text-white"
+        [ngClass]="!isLocal() ? 'bg-gray-600' : 'bg-indigo-500'"
+      >
+        {{symbol(message.sender?.name)}}
+      </div>
+    </div>
+    <div
+      class="flex flex-col w-full  rounded-lg p-3 gap-3"
+      [ngClass]="{'text-white' : isLocal()}"
+      [ngStyle]="{'background-color': !isLocal() ? '#F3F4F6' : message.sender?.color}"
+    >
+      <div class="flex justify-between text-sm gap-2.5">
+        <p class=" font-bold"> {{message.sender?.name}}</p>
+        <p> {{message.createdAt}}</p>
+      </div>
+      <div *ngFor="let part of message.parts">
+        <img *ngIf="part.type === 'image'" [src]="part.content" class="w-40" [alt]="part.id" />
+        <p *ngIf="part.type === 'text'">{{part.content}}</p>
+        <a *ngIf="part.type === 'link'"
+           target="_blank"
+           [ngClass]="!isLocal() ? 'text-indigo-700 hover:text-indigo-400' : 'text-gray-200 hover:text-gray-50'"
+           [href]="part.content">{{part.content}}</a>
+      </div>
+
+    </div>
+  </div>
+</ng-template>
+

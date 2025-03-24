@@ -1,6 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { Message } from '../../shared/models/message.model';
 import { CommonModule } from '@angular/common';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-message',
@@ -10,12 +11,15 @@ import { CommonModule } from '@angular/common';
 export class MessageComponent {
   @Input() message: Message = new Message();
 
+  constructor(private authService: AuthService) {
+  }
+
   symbol(name: string | undefined): string {
     return name?.slice(0, 2).toUpperCase() || 'KW';
   }
 
-  bgColor(color: string | undefined) {
-    return 'bg-' + color + '-500 text-white';
+  isLocal(): boolean {
+    return this.message.sender?.id === this.authService.user()?.id;
   }
 
 }

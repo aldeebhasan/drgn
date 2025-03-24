@@ -1,6 +1,6 @@
-import { User } from '../models/user.model';
 import { inject, Injectable } from '@angular/core';
 import { CookieService } from 'ngx-cookie-service';
+import { User } from '../shared/models/user.model';
 
 
 @Injectable({

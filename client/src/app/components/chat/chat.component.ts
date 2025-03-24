@@ -1,11 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Message } from '../../shared/models/message.model';
 import { User } from '../../shared/models/user.model';
 import { MessageComponent } from '../message/message.component';
-import { AuthService } from '../../shared/services/auth.service';
-import { CookieService } from 'ngx-cookie-service';
+import { AuthService } from '../../services/auth.service';
+import { ChatService } from '../../services/chat.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-chat',
@@ -14,25 +15,14 @@ import { CookieService } from 'ngx-cookie-service';
   templateUrl: './chat.component.html',
 })
 export class ChatComponent implements OnInit {
+
+  @ViewChild('chatWindow') chatWindow?: ElementRef;
   audio?: HTMLAudioElement;
   sender?: User;
-  message: Message = {
-    id: '1',
-    parts: [{
-      type: 'text', content: 'That book sounds interesting! What\'s it about?',
-    }, {
-      type: 'image', content: 'https://placehold.co/200x/ffa8e4/ffffff.svg?text=ʕ•́ᴥ•̀ʔ&font=Lato',
-    }, {
-      type: 'link', content: 'https://placehold.co/200x/ffa8e4/ffffff.svg?text=ʕ•́ᴥ•̀ʔ&font=Lato',
-    }],
-    sender: new User('1', 'Ali Deeb'),
-    isLocal: false,
-    createdAt: new Date().toLocaleString(),
-  };
-  messages: Array<Message> = [this.message, this.message]; // Array to store messages
+  @Input() messages: Array<Message> = [];
   newMessage: string = ''; // Input field value
 
-  constructor(private authService: AuthService) {
+  constructor(private authService: AuthService, private chatService: ChatService, private router: Router) {
 
     this.audio = new Audio();
     this.audio.src = '/assets/beep.mp3';
@@ -41,6 +31,7 @@ export class ChatComponent implements OnInit {
 
   ngOnInit() {
     this.sender = this.authService.user();
+    this.chatService.joinChat(this.sender);
   }
 
   // Send a text message
@@ -51,11 +42,10 @@ export class ChatComponent implements OnInit {
         sender: this.sender,
         parts: [{ type: type, content: this.newMessage }],
         createdAt: new Date().toLocaleString(),
-        isLocal: true,
       };
-      this.messages.push(msg);
-      this.newMessage = ''; // Clear input field
-      this.audio?.play();
+      this.chatService.sendMessage(msg);
+      // this.messages.push(msg);
+      this.afterMessageAdd();
     }
   }
 
@@ -65,10 +55,31 @@ export class ChatComponent implements OnInit {
       sender: this.sender,
       parts: [{ type: 'image', content: 'https://placehold.co/200x/ffa8e4/ffffff.svg?text=ʕ•́ᴥ•̀ʔ&font=Lato' }],
       createdAt: new Date().toLocaleString(),
-      isLocal: true,
     };
     this.messages.push(msg);
-    this.audio?.play();
+    this.afterMessageAdd();
   }
 
+
+  afterMessageAdd() {
+    this.newMessage = '';
+    this.audio?.play();
+    setTimeout(() => {
+      this.chatWindow?.nativeElement.scroll({
+        top: this.chatWindow.nativeElement.scrollHeight,
+        behavior: 'smooth',
+      });
+    }, 100);
+
+  }
+
+  isLocal(message: Message): boolean {
+    return message.sender?.id === this.authService.user()?.id;
+  }
+
+  logout() {
+    this.authService.logout();
+    this.chatService.leaveChat(this.sender);
+    this.router.navigateByUrl('register');
+  }
 }

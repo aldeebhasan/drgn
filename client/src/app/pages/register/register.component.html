@@ -10,10 +10,11 @@
                 type="text"
                 formControlName="name"
                 autocomplete="given-name"
+                autofocus
                 placeholder="Your name"
                 class="mb-2 w-full text-gray-600 rounded-md border  py-2 pl-2 pr-4 shadow-md sm:mb-0 focus:ring-2 focus:outline-none focus:ring-yellow-400"
               />
-              <div *ngIf="form?.get('name')?.invalid && form?.get('name')?.touched" class="text-red-600">Name is required.</div>
+              <div *ngIf="form?.get('name')?.invalid && form?.get('name')?.touched" class="text-red-600">Name is required & at least 3 characters.</div>
             </div>
           </div>
         </div>
