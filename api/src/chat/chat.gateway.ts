@@ -24,7 +24,6 @@ export class ChatGateway {
     @MessageBody() data: ChatActionDto,
     @ConnectedSocket() client: Socket,
   ): Promise<string> {
-    console.log('join', data);
     const { user } = data;
     await client.join(this.room); // Join the user to a room (optional)
     this.server.to(this.room).emit('join', `${user.name} has joined the chat.`); // Broadcast to all clients
