@@ -6,7 +6,11 @@ export const authGuard: CanActivateFn = (route, state) => {
 
   const authService = inject(AuthService);
   if (authService.isLogin()) {
-    return true;
+    if(authService.hasRoom()){
+      return true;
+    }else{
+      return inject(Router).createUrlTree(['/room']);
+    }
   }
   return inject(Router).createUrlTree(['/register']);
 };

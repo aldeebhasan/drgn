@@ -3,6 +3,7 @@ import { io, Socket } from 'socket.io-client';
 import { Observable } from 'rxjs';
 import { Message } from '../shared/models/message.model';
 import { User } from '../shared/models/user.model';
+import { Room } from '../shared/models/room.model';
 
 @Injectable({
   providedIn: 'root',
@@ -15,17 +16,22 @@ export class ChatService {
     this.socket = io(this.url);
   }
 
-  // Emit "join" event
-  joinChat(user?: User): void {
-    this.socket.emit('join', { user });
+  createRoom(user?: User, room?: Room): void {
+    this.socket.emit('create', { user, room });
   }
-  leaveChat(user?: User): void {
-    this.socket.emit('leave', { user });
+
+  joinChat(user?: User, room?: Room): void {
+    this.socket.emit('join', { user, room });
+  }
+
+  leaveChat(user?: User, room?: Room): void {
+    this.socket.emit('leave', { user, room });
+    this.clear();
   }
 
   // Emit "message" event
-  sendMessage(message: Message): void {
-    this.socket.emit('message', { message });
+  sendMessage(message: Message, room?: Room): void {
+    this.socket.emit('message', { message, room });
   }
 
   // Listen for "message" events
@@ -48,10 +54,20 @@ export class ChatService {
     });
   }
 
-  // Listen for "error" events
-  onError(): Observable<string> {
+  onSuccess(): Observable<any> {
     return new Observable((observer) => {
-      this.socket.on('error', (error) => observer.next(error.message));
+      this.socket.on('success', (data) => observer.next(data));
     });
+  }
+
+  // Listen for "error" events
+  onError(): Observable<{ message: string, errors: {} }> {
+    return new Observable((observer) => {
+      this.socket.on('error', (error) => observer.next(error));
+    });
+  }
+
+  clear():void {
+    this.socket.removeAllListeners()
   }
 }

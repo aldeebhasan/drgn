@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { User } from '../../shared/models/user.model';
 import { ChatService } from '../../services/chat.service';
+import { Room } from '../../shared/models/room.model';
 
 @Component({
   selector: 'app-contacts',
@@ -16,17 +17,19 @@ import { ChatService } from '../../services/chat.service';
 export class ContactsComponent implements OnInit {
   chats: Chat[] = [new Chat('comunity', 'Comuntiy')];
   user?: User;
+  room?: Room;
 
   constructor(private authService: AuthService, private chatService: ChatService, private router: Router) {
   }
 
   ngOnInit() {
     this.user = this.authService.user();
+    this.room = this.authService.room();
   }
 
   logout() {
     this.authService.logout();
-    this.chatService.leaveChat(this.user);
+    this.chatService.leaveChat(this.user, this.room);
     this.router.navigateByUrl('register');
   }
 }

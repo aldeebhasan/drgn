@@ -1,5 +1,5 @@
 <div class="h-screen  flex justify-center items-center bg-gray-100">
-  <div class="py-12 px-4 w-96 bg-white rounded-md shadow-2xl">
+  <div class="py-12 px-6 w-96 bg-white rounded-md shadow-2xl">
     <div class="h-fit pb-6 relative" id="form">
       <h2 class="mb-4 text-2xl font-bold dark:text-white">Ready to Get Started?</h2>
       <form id="contactForm" [formGroup]="form" (ngSubmit)="submitForm()">
@@ -12,7 +12,7 @@
                 autocomplete="given-name"
                 autofocus
                 placeholder="Your name"
-                class="mb-2 w-full text-gray-600 rounded-md border  py-2 pl-2 pr-4 shadow-md sm:mb-0 focus:ring-2 focus:outline-none focus:ring-yellow-400"
+                class="mb-2 w-full text-gray-600 rounded-md border  py-2 pl-2 pr-4 shadow-md sm:mb-0 focus:ring-2 focus:outline-none focus:bg-gray-200"
               />
               <div *ngIf="form?.get('name')?.invalid && form?.get('name')?.touched" class="text-red-600">Name is required & at least 3 characters.</div>
             </div>

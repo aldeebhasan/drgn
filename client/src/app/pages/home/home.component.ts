@@ -20,7 +20,6 @@ export class HomeComponent {
   ngOnInit(): void {
     // Listen for new messages
     this.chatService.onMessage().subscribe((data) => {
-      console.log(data);
       this.messages.push(data);
     });
 
@@ -31,8 +30,8 @@ export class HomeComponent {
     this.chatService.onLeave().subscribe((message) => {
       this.messages.push(this.generateSystemMsg(message));
     });
-    this.chatService.onError().subscribe((message) => {
-      console.log(message);
+    this.chatService.onError().subscribe((error) => {
+      alert(error.message);
     });
   }
 

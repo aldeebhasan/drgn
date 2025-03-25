@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import { WsException } from '@nestjs/websockets';
 import { Socket } from 'socket.io';
+import { isString } from '@nestjs/common/utils/shared.utils';
 
 @Catch(WsException, HttpException)
 export class WsValidationFilter implements WsExceptionFilter {
@@ -17,13 +18,12 @@ export class WsValidationFilter implements WsExceptionFilter {
     const error: object | string =
       exception instanceof WsException
         ? exception.getError()
-        : exception.getResponse()['message'] || {};
-    console.log(error);
+        : ((exception.getResponse()['message'] || {}) as object);
     // Send a formatted error response to the client
     client.emit('error', {
       status: 'error',
-      message: 'Validation failed',
-      errors: error, // Include the validation errors
+      message: isString(error) ? error : 'Validation failed',
+      errors: isString(error) ? {} : error,
     });
   }
 }

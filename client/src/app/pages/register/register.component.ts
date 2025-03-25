@@ -27,8 +27,7 @@ export class RegisterComponent {
       const user: User = new User(id.toString(), this.form.value['name']);
 
       this.authService.login(user);
-      this.router.navigateByUrl('chat');
-
+      this.router.navigateByUrl('room');
     }
   }
 }

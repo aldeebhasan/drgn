@@ -7,6 +7,7 @@ import { MessageComponent } from '../message/message.component';
 import { AuthService } from '../../services/auth.service';
 import { ChatService } from '../../services/chat.service';
 import { Router } from '@angular/router';
+import { Room } from '../../shared/models/room.model';
 
 @Component({
   selector: 'app-chat',
@@ -19,6 +20,7 @@ export class ChatComponent implements OnInit {
   @ViewChild('chatWindow') chatWindow?: ElementRef;
   audio?: HTMLAudioElement;
   sender?: User;
+  room?: Room;
   @Input() messages: Array<Message> = [];
   newMessage: string = ''; // Input field value
 
@@ -31,7 +33,8 @@ export class ChatComponent implements OnInit {
 
   ngOnInit() {
     this.sender = this.authService.user();
-    this.chatService.joinChat(this.sender);
+    this.room = this.authService.room();
+    this.chatService.joinChat(this.sender, this.room);
   }
 
   // Send a text message
@@ -43,20 +46,22 @@ export class ChatComponent implements OnInit {
         parts: [{ type: type, content: this.newMessage }],
         createdAt: new Date().toLocaleString(),
       };
-      this.chatService.sendMessage(msg);
-      // this.messages.push(msg);
+      this.chatService.sendMessage(msg, this.room);
       this.afterMessageAdd();
     }
   }
 
   // Send an image message
-  sendImageMessage(event: any) {
+  async sendImageMessage(event: any) {
+    let file = event.target.files[0];
+    let newf = new Blob(await file.arrayBuffer(),file.name);
+
     let msg: Message = {
       sender: this.sender,
-      parts: [{ type: 'image', content: 'https://placehold.co/200x/ffa8e4/ffffff.svg?text=ʕ•́ᴥ•̀ʔ&font=Lato' }],
+      parts: [{ type: 'image', content: newf }],
       createdAt: new Date().toLocaleString(),
     };
-    this.messages.push(msg);
+    this.chatService.sendMessage(msg, this.room);
     this.afterMessageAdd();
   }
 
@@ -79,7 +84,7 @@ export class ChatComponent implements OnInit {
 
   logout() {
     this.authService.logout();
-    this.chatService.leaveChat(this.sender);
+    this.chatService.leaveChat(this.sender, this.room);
     this.router.navigateByUrl('register');
   }
 }
