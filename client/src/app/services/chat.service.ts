@@ -10,7 +10,7 @@ import { Room } from '../shared/models/room.model';
 })
 export class ChatService {
   private socket: Socket;
-  private readonly url: string = 'http://localhost:3000/chat'; // Replace with your backend URL
+  private readonly url: string = 'http://localhost:8080/chat'; // Replace with your backend URL
 
   constructor() {
     this.socket = io(this.url);
