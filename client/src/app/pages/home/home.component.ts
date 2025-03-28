@@ -13,14 +13,19 @@ import { User } from '../../shared/models/user.model';
 export class HomeComponent {
 
   messages: Array<Message> = [];
+  audio?: HTMLAudioElement;
 
   constructor(private chatService: ChatService) {
+    this.audio = new Audio();
+    this.audio.src = '/assets/beep.mp3';
+    this.audio.load();
   }
 
   ngOnInit(): void {
     // Listen for new messages
     this.chatService.onMessage().subscribe((data) => {
       this.messages.push(data);
+      this.audio?.play();
     });
 
     // Listen for join notifications

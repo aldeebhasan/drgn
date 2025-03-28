@@ -18,18 +18,12 @@ import { Room } from '../../shared/models/room.model';
 export class ChatComponent implements OnInit {
 
   @ViewChild('chatWindow') chatWindow?: ElementRef;
-  audio?: HTMLAudioElement;
   sender?: User;
   room?: Room;
   @Input() messages: Array<Message> = [];
   newMessage: string = ''; // Input field value
 
-  constructor(private authService: AuthService, private chatService: ChatService, private router: Router) {
-
-    this.audio = new Audio();
-    this.audio.src = '/assets/beep.mp3';
-    this.audio.load();
-  }
+  constructor(private authService: AuthService, private chatService: ChatService, private router: Router) {}
 
   ngOnInit() {
     this.sender = this.authService.user();
@@ -68,7 +62,6 @@ export class ChatComponent implements OnInit {
 
   afterMessageAdd() {
     this.newMessage = '';
-    this.audio?.play();
     setTimeout(() => {
       this.chatWindow?.nativeElement.scroll({
         top: this.chatWindow.nativeElement.scrollHeight,

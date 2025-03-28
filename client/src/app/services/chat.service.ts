@@ -10,7 +10,7 @@ import { Room } from '../shared/models/room.model';
 })
 export class ChatService {
   private socket: Socket;
-  private readonly url: string = '/chat'; // Replace with your backend URL
+  private readonly url: string = '/chat';
 
   constructor() {
     this.socket = io(this.url);
@@ -67,7 +67,7 @@ export class ChatService {
     });
   }
 
-  clear():void {
+  clear(): void {
     this.socket.removeAllListeners()
   }
 }
