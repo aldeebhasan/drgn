@@ -21,7 +21,7 @@ export class WsValidationFilter implements WsExceptionFilter {
         : ((exception.getResponse()['message'] || {}) as object);
     // Send a formatted error response to the client
     client.emit('error', {
-      status: 'error',
+      success: false,
       message: isString(error) ? error : 'Validation failed',
       errors: isString(error) ? {} : error,
     });

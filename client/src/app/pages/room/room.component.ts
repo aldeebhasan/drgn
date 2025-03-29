@@ -22,24 +22,26 @@ export class RoomComponent {
       name: ['', [Validators.required]],
       password: ['', [Validators.required, Validators.minLength(8)]],
     });
-    chatService.onSuccess().subscribe((data: any) => {
-      this.authService.setRoom(data)
-      this.chatService.clear();
-      this.router.navigateByUrl('chat');
-    })
+
     chatService.onError().subscribe((error) => {
       alert(error.message);
     })
   }
 
-  submitForm(event: any) {
+  async submitForm(event: any) {
     if (this.form?.valid) {
       const room: Room = new Room(this.form.value['name'], this.form.value['password']);
 
+      let response = undefined;
       if (event.submitter.value === 'create') {
-        this.chatService.createRoom(this.authService.user(), room);
+        response = await this.chatService.createRoom(this.authService.user(), room);
       } else {
-        this.chatService.joinChat(this.authService.user(), room);
+        response = await this.chatService.joinChat(this.authService.user(), room);
+      }
+      if (response && response.success) {
+        this.authService.setRoom(response.data)
+        this.chatService.clear();
+        this.router.navigateByUrl('chat');
       }
     }
   }

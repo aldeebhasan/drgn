@@ -31,7 +31,7 @@ export class ChatGateway {
   async handleCreateRoom(
     @MessageBody() data: ChatActionDto,
     @ConnectedSocket() client: Socket,
-  ): Promise<string> {
+  ) {
     const { room } = data;
     const rooms = (await this.getRooms()) || {};
     if (rooms[room.name]) {
@@ -39,15 +39,18 @@ export class ChatGateway {
     }
     rooms[room.name] = room;
     await this.cacheManager.set<Record<string, Room>>('rooms', rooms);
-    client.emit('success', room);
-    return `Room, ${room.name} Created!`;
+    client.emit('create_response', {
+      success: true,
+      message: 'Done',
+      data: room,
+    });
   }
 
   @SubscribeMessage('join')
   async handleJoin(
     @MessageBody() data: ChatActionDto,
     @ConnectedSocket() client: Socket,
-  ): Promise<string> {
+  ) {
     const { user, room } = data;
     const rooms = (await this.getRooms()) || {};
     if (!rooms[room.name]) {
@@ -63,7 +66,11 @@ export class ChatGateway {
     }
     await client.join(room.name); // Join the user to a room (optional)
     client.emit('success', room);
-    return `Welcome, ${user.name}!`;
+    client.emit('join_response', {
+      success: true,
+      message: 'Done',
+      data: room,
+    });
   }
 
   @SubscribeMessage('leave')

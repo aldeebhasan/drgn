@@ -10,19 +10,31 @@ import { Room } from '../shared/models/room.model';
 })
 export class ChatService {
   private socket: Socket;
-  private readonly url: string = '/chat';
-  // private readonly url: string = 'http://localhost:8080/chat';
+  // private readonly url: string = '/chat';
+  private readonly url: string = 'http://localhost:8080/chat';
 
   constructor() {
     this.socket = io(this.url);
   }
 
-  createRoom(user?: User, room?: Room): void {
-    this.socket.emit('create', { user, room });
+  createRoom(user?: User, room?: Room): Promise<any> {
+    return new Promise((resolve) => {
+      this.socket.emit('create', { user, room });
+
+      this.socket.once('create_response', (response) => {
+        resolve(response);
+      });
+    });
   }
 
-  joinChat(user?: User, room?: Room): void {
-    this.socket.emit('join', { user, room });
+  joinChat(user?: User, room?: Room): Promise<any> {
+    return new Promise((resolve) => {
+      this.socket.emit('join', { user, room });
+
+      this.socket.once('join_response', (response) => {
+        resolve(response);
+      });
+    });
   }
 
   leaveChat(user?: User, room?: Room): void {
