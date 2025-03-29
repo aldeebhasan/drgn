@@ -10,7 +10,7 @@
 </div>
 
 <ng-template #messageTemplate>
-  <div class="flex sm:max-w-7/12 max-w-10/12 min-w-4/12" [ngClass]="{'flex-row-reverse':isLocal()}">
+  <div class="flex sm:max-w-7/12 max-w-10/12 sm:min-w-4/12 min-w-6/12" [ngClass]="{'flex-row-reverse':isLocal()}">
     <div class="w-9 h-9 rounded-full flex items-center justify-center mx-2">
       <div class=" size-8 rounded-full flex items-center justify-center border-y-2" [ngClass]="{'text-white' : isLocal()}" [ngStyle]="{'background-color': !isLocal() ? '#FFF' : message.sender?.color}">
         {{symbol(message.sender?.name)}}
