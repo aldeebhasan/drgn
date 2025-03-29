@@ -1,6 +1,5 @@
 <div class="h-screen  flex flex-col justify-center items-center">
-  <h2 class="mb-4 text-2xl font-bold dark:text-white">Create Your Own Room</h2>
-
+  <img src="/assets/logo@full.png" alt="Drgn" class="h-30" />
     <div class="py-8 px-6 w-96 bg-white rounded-md shadow-2xl">
       <div class="h-fit pb-6 relative" id="form">
         <form id="contactForm" [formGroup]="form" (ngSubmit)="submitForm($event)">
@@ -11,24 +10,24 @@
                   type="text"
                   formControlName="name"
                   autofocus
-                  placeholder="Room name"
-                  class="my-2 w-full text-gray-600 rounded-md border  py-2 pl-2 pr-4 shadow-md sm:mb-0 focus:ring-2 focus:outline-none focus:bg-gray-200"
+                  placeholder="Name..."
+                  class="my-2 w-full text-gray-600 rounded-md border  py-2 pl-2 pr-4 shadow-md sm:mb-0 focus:ring-2 focus:outline-none focus:bg-gray-100"
                 />
                 <div *ngIf="form?.get('name')?.invalid && form?.get('name')?.touched" class="text-red-600">Name is required.</div>
             </div>
             <div class="mx-0 mb-1 sm:mb-4">
-              <label class="font-semibold">Password</label>
+              <label class="font-semibold">Room Password</label>
                   <input
                     type="password"
                     formControlName="password"
-                    placeholder="Room password"
-                    class="my-2 w-full text-gray-600 rounded-md border  py-2 pl-2 pr-4 shadow-md sm:mb-0 focus:ring-2 focus:outline-none focus:bg-gray-200"
+                    placeholder="Password..."
+                    class="my-2 w-full text-gray-600 rounded-md border  py-2 pl-2 pr-4 shadow-md sm:mb-0 focus:ring-2 focus:outline-none focus:bg-gray-100"
                   />
                   <div *ngIf="form?.get('password')?.invalid && form?.get('password')?.touched" class="text-red-600">Password is required and at least 8 characters.</div>
               </div>
           </div>
           <div class="text-center flex sm:flex-row flex-col gap-2 items-center">
-            <button type="submit" value="join" class="sm:w-2/5 w-full bg-green-500 focus:bg-green-400 text-white px-6 py-3 font-xl rounded-xl sm:mb-0 cursor-pointer">Join</button>
+            <button type="submit" value="join" class="sm:w-2/5 w-full bg-green-600 focus:bg-green-500 text-white px-6 py-3 font-xl rounded-xl sm:mb-0 cursor-pointer">Join</button>
             <div class="relative flex flex-col items-center justify-center sm:w-1/5 w-full">
               <div class="h-0.5 bg-gray-200 w-full absolute "></div>
               <div class="z-10 bg-white px-1">OR</div>

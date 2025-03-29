@@ -15,7 +15,7 @@ import { Room } from '../../shared/models/room.model';
   providers: [CookieService],
 })
 export class ContactsComponent implements OnInit {
-  chats: Chat[] = [new Chat('comunity', 'Comuntiy')];
+  chats: Chat[] = [];
   user?: User;
   room?: Room;
 
@@ -25,6 +25,7 @@ export class ContactsComponent implements OnInit {
   ngOnInit() {
     this.user = this.authService.user();
     this.room = this.authService.room();
+    this.chats = [new Chat('0', this.room?.name)];
   }
 
   logout() {

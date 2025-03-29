@@ -11,6 +11,7 @@ import { Room } from '../shared/models/room.model';
 export class ChatService {
   private socket: Socket;
   private readonly url: string = '/chat';
+  // private readonly url: string = 'http://localhost:8080/chat';
 
   constructor() {
     this.socket = io(this.url);

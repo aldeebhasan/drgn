@@ -2,7 +2,7 @@
 <div class="flex flex-col h-screen">
   <!-- Chat Header -->
   <header class="bg-white p-4 text-gray-700 flex justify-between items-center border-b-2 border-b-indigo-100">
-    <h1 class="text-2xl font-semibold   ">Community</h1>
+    <h1 class="text-2xl font-semibold   ">{{room?.name}}</h1>
     <button type="submit" (click)="logout()" class=" bg-red-500 focus:bg-red-700 hover:bg-red-600 text-white px-2 py-1  rounded-lg sm:mb-0 cursor-pointer sm:hidden">Logout ({{sender?.name}})</button>
   </header>
 

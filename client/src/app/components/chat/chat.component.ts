@@ -1,6 +1,6 @@
 import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { Message } from '../../shared/models/message.model';
 import { User } from '../../shared/models/user.model';
 import { MessageComponent } from '../message/message.component';
@@ -22,6 +22,7 @@ export class ChatComponent implements OnInit {
   room?: Room;
   @Input() messages: Array<Message> = [];
   newMessage: string = ''; // Input field value
+  datepipe: DatePipe = new DatePipe('en-US')
 
   constructor(private authService: AuthService, private chatService: ChatService, private router: Router) {}
 
@@ -38,11 +39,12 @@ export class ChatComponent implements OnInit {
       let msg: Message = {
         sender: this.sender,
         parts: [{ type: type, content: this.newMessage }],
-        createdAt: new Date().toLocaleString(),
+        createdAt: this.datepipe.transform(new Date(), 'dd,MMM HH:mm a') as string,
       };
       this.chatService.sendMessage(msg, this.room);
       this.afterMessageAdd();
     }
+   
   }
 
   // Send an image message

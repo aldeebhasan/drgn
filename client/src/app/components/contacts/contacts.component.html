@@ -2,10 +2,9 @@
 <div class="bg-gray-50 border-r border-gray-300 flex flex-col h-screen">
   <!-- Sidebar Header -->
   <header
-    class="p-4 border-b border-gray-300 flex justify-between items-center bg-indigo-600 text-white"
-  [ngStyle] = "{'background-color' : user?.color || '#5850EC'}"
+    class=" border-b border-gray-300 flex justify-start items-center text-white"
   >
-    <h1 class="text-2xl font-semibold">DRNG</h1>
+  <img src="/assets/logo@full.png" alt="Drgn" class="h-16" />
   </header>
 
   <!-- Contact List -->
@@ -17,8 +16,8 @@
         <img src="https://placehold.co/200x/e7c2ff/7315d1.svg?text=ʕ•́ᴥ•̀ʔ&font=Lato" alt="User Avatar" class="w-12 h-12 rounded-full">
       </div>
       <div class="flex-1">
-        <h2 class="text-lg font-semibold">{{chat.name}}</h2>
-        <p class="text-gray-600">Check the last message of {{chat.name}}</p>
+        <h3 class=" font-semibold">{{chat.name}}</h3>
+        <p class="text-sm text-gray-600">Check the last message</p>
       </div>
     </div>
 
