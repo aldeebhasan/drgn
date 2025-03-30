@@ -8,6 +8,7 @@ import { AuthService } from '../../services/auth.service';
 import { ChatService } from '../../services/chat.service';
 import { Router } from '@angular/router';
 import { Room } from '../../shared/models/room.model';
+import { ApiService } from '../../services/api.service';
 
 @Component({
   selector: 'app-chat',
@@ -24,7 +25,12 @@ export class ChatComponent implements OnInit {
   newMessage: string = ''; // Input field value
   datepipe: DatePipe = new DatePipe('en-US')
 
-  constructor(private authService: AuthService, private chatService: ChatService, private router: Router) {}
+  constructor(
+    private authService: AuthService,
+    private chatService: ChatService,
+    private apiService: ApiService,
+    private router: Router
+    ) {}
 
   async ngOnInit() {
     this.sender = this.authService.user();
@@ -50,11 +56,12 @@ export class ChatComponent implements OnInit {
   // Send an image message
   async sendImageMessage(event: any) {
     let file = event.target.files[0];
-    let newf = new Blob(await file.arrayBuffer(),file.name);
+    
+    const response = await this.apiService.uploadImage(file);
 
     let msg: Message = {
       sender: this.sender,
-      parts: [{ type: 'image', content: newf }],
+      parts: [{ type: 'image', content: response.data.url || '' }],
       createdAt: new Date().toLocaleString(),
     };
     this.chatService.sendMessage(msg, this.room);
