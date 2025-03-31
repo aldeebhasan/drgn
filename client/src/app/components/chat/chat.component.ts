@@ -10,11 +10,12 @@ import { Router } from '@angular/router';
 import { Room } from '../../shared/models/room.model';
 import { ApiService } from '../../services/api.service';
 import { Part } from '../../shared/models/part.model';
+import { IconComponent } from '../icon/icon.component';
 
 @Component({
   selector: 'app-chat',
   standalone: true,
-  imports: [CommonModule, FormsModule, MessageComponent],
+  imports: [CommonModule, FormsModule, MessageComponent, IconComponent],
   templateUrl: './chat.component.html',
 })
 export class ChatComponent implements OnInit {
