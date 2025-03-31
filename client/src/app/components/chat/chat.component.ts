@@ -9,6 +9,7 @@ import { ChatService } from '../../services/chat.service';
 import { Router } from '@angular/router';
 import { Room } from '../../shared/models/room.model';
 import { ApiService } from '../../services/api.service';
+import { Part } from '../../shared/models/part.model';
 
 @Component({
   selector: 'app-chat',
@@ -23,6 +24,7 @@ export class ChatComponent implements OnInit {
   room?: Room;
   @Input() messages: Array<Message> = [];
   newMessage: string = ''; // Input field value
+  replyToMessage?: Message = undefined;
   datepipe: DatePipe = new DatePipe('en-US')
 
   constructor(
@@ -30,7 +32,7 @@ export class ChatComponent implements OnInit {
     private chatService: ChatService,
     private apiService: ApiService,
     private router: Router
-    ) {}
+  ) { }
 
   async ngOnInit() {
     this.sender = this.authService.user();
@@ -39,24 +41,38 @@ export class ChatComponent implements OnInit {
   }
 
   // Send a text message
-  sendTextMessage() {
+  sendMessage() {
     if (this.newMessage.trim()) {
       let type: 'link' | 'text' = this.newMessage.startsWith('http') ? 'link' : 'text';
+
+      const parts: Part[] = [];
+      if (this.replyToMessage) {
+        let content = `Reply to ${this.replyToMessage.sender?.name}: `;
+        let part = this.replyToMessage.parts[this.replyToMessage.parts.length-1];
+        if (part.type === 'text' || part.type === 'link') {
+          content += part.content;
+        } else if (part.type === 'image') {
+          content += "Image";
+        }
+        parts.push({ type: 'message', content: content })
+      }
+
+      parts.push({ type: type, content: this.newMessage });
       let msg: Message = {
         sender: this.sender,
-        parts: [{ type: type, content: this.newMessage }],
+        parts: parts,
         createdAt: this.datepipe.transform(new Date(), 'dd,MMM HH:mm a') as string,
       };
       this.chatService.sendMessage(msg, this.room);
       this.afterMessageAdd();
     }
-   
+
   }
 
   // Send an image message
   async sendImageMessage(event: any) {
     let file = event.target.files[0];
-    
+
     const response = await this.apiService.uploadImage(file);
 
     let msg: Message = {
@@ -69,8 +85,10 @@ export class ChatComponent implements OnInit {
   }
 
 
+
   afterMessageAdd() {
     this.newMessage = '';
+    this.replyToMessage = undefined;
     setTimeout(() => {
       this.chatWindow?.nativeElement.scroll({
         top: this.chatWindow.nativeElement.scrollHeight,

@@ -7,6 +7,7 @@ import {
 import { UploaderService } from './uploader.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { UploadApiErrorResponse, UploadApiResponse } from 'cloudinary';
+import { ResponseDto } from '../../core/dtos/response.dto';
 
 @Controller('uploader')
 export class UploaderController {
@@ -18,21 +19,13 @@ export class UploaderController {
     return this.service
       .uploadFile(file)
       .then((response: UploadApiResponse) => {
-        return {
-          success: true,
-          message: 'Done',
-          data: {
-            url: response?.secure_url ?? response.url ?? '',
-            public_id: response.public_id,
-          },
-        };
+        return ResponseDto.success({
+          url: response?.secure_url ?? response.url ?? '',
+          public_id: response.public_id,
+        });
       })
-      .catch((err: UploadApiErrorResponse) => {
-        return {
-          success: false,
-          message: err.message,
-          data: null,
-        };
+      .catch((err: Error) => {
+        return ResponseDto.error(err.message);
       });
   }
 }

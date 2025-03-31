@@ -4,35 +4,41 @@ import { Observable } from 'rxjs';
 import { Message } from '../shared/models/message.model';
 import { User } from '../shared/models/user.model';
 import { Room } from '../shared/models/room.model';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ChatService {
   private socket: Socket;
-  // private readonly url: string = '/chat';
-  private readonly url: string = 'http://localhost:8080/chat';
+  private readonly url: string = environment.baseUrl + '/chat';
 
   constructor() {
     this.socket = io(this.url);
   }
 
   createRoom(user?: User, room?: Room): Promise<any> {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
       this.socket.emit('create', { user, room });
 
-      this.socket.once('create_response', (response) => {
+      this.socket.once('success', (response) => {
         resolve(response);
+      });
+      this.socket.once('error', (response) => {
+        reject(response);
       });
     });
   }
 
   joinChat(user?: User, room?: Room): Promise<any> {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
       this.socket.emit('join', { user, room });
 
-      this.socket.once('join_response', (response) => {
+      this.socket.once('success', (response) => {
         resolve(response);
+      });
+      this.socket.once('error', (response) => {
+        reject(response);
       });
     });
   }

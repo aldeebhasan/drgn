@@ -1,6 +1,8 @@
+import { Message } from "./message.model";
+
 export class Part {
   id?: string;
-  type?: 'link' | 'text' | 'image';
-  content?: string|Blob = '';
+  type?: 'link' | 'text' | 'image' | 'message';
+  content?: string = '';
 
 }

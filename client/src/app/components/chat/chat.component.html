@@ -14,6 +14,7 @@
       class="flex mb-4 cursor-pointer  "
       [ngClass]="{'justify-end': isLocal(message)}"
       [message]="message"
+      (click) = 'replyToMessage = message'
     >
     </app-message>
 
@@ -21,9 +22,15 @@
   </div>
 
   <!-- Chat Input -->
+  <div *ngIf="replyToMessage" class="p-2 bg-gray-300 opacity-60 shadow-2xl rounded-t-xl">
+    <app-message
+    [message]="replyToMessage"
+  >
+  </app-message>
+  </div>
   <footer class="bg-white border-t border-gray-300 p-4 w-full">
     <div class="flex items-center gap-2">
-      <input [(ngModel)]="newMessage" (keyup.enter)="sendTextMessage()" placeholder="Type a message..." autofocus
+      <input [(ngModel)]="newMessage" (keyup.enter)="sendMessage()" placeholder="Type a message..." autofocus
              class="w-full p-2 rounded-md border border-gray-400 focus:outline-none focus:border-gray-500"/>
 
       <label for="uploadFile1"
@@ -40,7 +47,7 @@
                type="file" id='uploadFile1' class="hidden"/>
       </label>
 
-      <button class="bg-black focus:bg-gray-700 hover:bg-gray-800 text-white px-4 py-2 rounded-md cursor-pointer" (click)="sendTextMessage()">Send</button>
+      <button class="bg-black focus:bg-gray-700 hover:bg-gray-800 text-white px-4 py-2 rounded-md cursor-pointer" (click)="sendMessage()">Send</button>
     </div>
   </footer>
 </div>

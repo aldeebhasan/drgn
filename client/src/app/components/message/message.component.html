@@ -25,6 +25,7 @@
           <img *ngIf="part.type === 'image'" [src]="part.content" class="w-40" [alt]="part.id" />
           <p *ngIf="part.type === 'text'">{{part.content}}</p>
           <a *ngIf="part.type === 'link'" target="_blank" [ngClass]="!isLocal() ? 'text-green-700 hover:text-green-500' : 'text-gray-200 hover:text-gray-50'" [href]="part.content">{{part.content}}</a>
+          <div *ngIf="part.type === 'message'" class="bg-gray-200 text-gray-700 shadow-2xl rounded-lg text-sm border-l-4 p-2">{{part.content}}</div>
         </div>
       </div>
       <p class="text-xs"> {{message.createdAt}}</p>

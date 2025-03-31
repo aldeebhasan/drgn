@@ -5,6 +5,7 @@ import { AuthService } from '../../services/auth.service';
 import { ChatService } from '../../services/chat.service';
 import { Room } from '../../shared/models/room.model';
 import { CommonModule } from '@angular/common';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-room',
@@ -16,33 +17,38 @@ export class RoomComponent {
 
   constructor(
     private formBuilder: FormBuilder, private router: Router,
-    private authService: AuthService, private chatService: ChatService
+    private authService: AuthService, private chatService: ChatService,
+    private toastrService: ToastrService
   ) {
     this.form = this.formBuilder.group({
       name: ['', [Validators.required]],
       password: ['', [Validators.required, Validators.minLength(8)]],
     });
-
-    chatService.onError().subscribe((error) => {
-      alert(error.message);
-    })
   }
 
   async submitForm(event: any) {
     if (this.form?.valid) {
       const room: Room = new Room(this.form.value['name'], this.form.value['password']);
 
-      let response = undefined;
       if (event.submitter.value === 'create') {
-        response = await this.chatService.createRoom(this.authService.user(), room);
+        this.chatService.createRoom(this.authService.user(), room).then(response => {
+          this.afterJoinOrCreate(response.data);
+        }).catch(err => {
+          this.toastrService.error(Object.values(err.errors).join(', ') ,err.message)
+        });
       } else {
-        response = await this.chatService.joinChat(this.authService.user(), room);
-      }
-      if (response && response.success) {
-        this.authService.setRoom(response.data)
-        this.chatService.clear();
-        this.router.navigateByUrl('chat');
+        this.chatService.joinChat(this.authService.user(), room).then(response => {
+          this.afterJoinOrCreate(response.data);
+        }).catch(err => {
+          this.toastrService.error(Object.values(err.errors).join(', ') ,err.message)
+        });
       }
     }
+  }
+
+  afterJoinOrCreate(room: Room) {
+    this.authService.setRoom(room)
+    this.chatService.clear();
+    this.router.navigateByUrl('chat');
   }
 }

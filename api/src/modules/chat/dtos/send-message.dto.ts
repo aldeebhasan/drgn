@@ -1,13 +1,11 @@
 import { IsObject, ValidateNested } from 'class-validator';
-import { User } from '../../models/user.model';
+import { Message } from '../../../models/message.model';
 import { Type } from 'class-transformer';
-import { Room } from '../../models/room.model';
+import { Room } from '../../../models/room.model';
 
-export class ChatActionDto {
-  @IsObject()
+export class SendMessageDto {
   @ValidateNested()
-  @Type(() => User)
-  user: User;
+  message: Message;
 
   @IsObject()
   @ValidateNested()

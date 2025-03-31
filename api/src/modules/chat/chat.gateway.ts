@@ -9,15 +9,17 @@ import {
 import { Server, Socket } from 'socket.io';
 import { ChatActionDto } from './dtos/chat-action.dto';
 import { SendMessageDto } from './dtos/send-message.dto';
-import { WsValidationFilter } from '../filters/ws-validation.filter';
-import { Inject, UseFilters, UsePipes, ValidationPipe } from '@nestjs/common';
-import { Room } from '../models/room.model';
+import { Inject, UseFilters, UsePipes } from '@nestjs/common';
+import { Room } from '../../models/room.model';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
+import { WsExceptionsFilter } from './filters/ws-exceptions.filter';
+import { ResponseDto } from '../../core/dtos/response.dto';
+import { validationPipe } from '../../core/pipes/validation.pipe';
 
 @WebSocketGateway({ namespace: '/chat', cors: { origin: '*' } })
-@UsePipes(new ValidationPipe())
-@UseFilters(new WsValidationFilter())
+@UsePipes(validationPipe)
+@UseFilters(new WsExceptionsFilter())
 export class ChatGateway {
   @WebSocketServer() server: Server; // Access to the WebSocket server instance
 
@@ -39,11 +41,7 @@ export class ChatGateway {
     }
     rooms[room.name] = room;
     await this.cacheManager.set<Record<string, Room>>('rooms', rooms);
-    client.emit('create_response', {
-      success: true,
-      message: 'Done',
-      data: room,
-    });
+    client.emit('success', ResponseDto.success(room));
   }
 
   @SubscribeMessage('join')
@@ -65,23 +63,17 @@ export class ChatGateway {
         .emit('join', `${user.name} has joined the chat.`); // Broadcast to all clients
     }
     await client.join(room.name); // Join the user to a room (optional)
-    client.emit('success', room);
-    client.emit('join_response', {
-      success: true,
-      message: 'Done',
-      data: room,
-    });
+    client.emit('success', ResponseDto.success(room));
   }
 
   @SubscribeMessage('leave')
   async handleLeave(
     @MessageBody() data: ChatActionDto,
     @ConnectedSocket() client: Socket,
-  ): Promise<string> {
+  ) {
     const { user, room } = data;
     await client.leave(room.name); // leave the user from a room (optional)
     this.server.to(room.name).emit('leave', `${user.name} has left the chat.`); // Broadcast to all clients
-    return `GoodBay, ${user.name}!`;
   }
 
   @SubscribeMessage('message')

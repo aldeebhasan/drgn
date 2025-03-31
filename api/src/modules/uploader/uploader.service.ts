@@ -27,7 +27,7 @@ export class UploaderService {
             overwrite: true,
           },
           (error, result) => {
-            if (error) return reject(error);
+            if (error) return reject(new Error(error.message));
             resolve(result);
           },
         )
