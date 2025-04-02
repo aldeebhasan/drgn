@@ -1,0 +1,17 @@
+<div *ngIf="part.type === 'media'" (click)="openModal($event, part.content)">
+    <img *ngIf="(part.content | castToMedia)?.type === 'image'" [src]="(part.content | castToMedia)?.path" class="w-30 bg-gray-100 rounded" [alt]="part.id" />
+</div>
+<p *ngIf="part.type === 'text'">{{part.content}}</p>
+<a *ngIf="part.type === 'link'" target="_blank" [ngClass]="!local ? 'text-green-700 hover:text-green-500' : 'text-gray-200 hover:text-gray-50'" [href]="part.content">{{part.content}}</a>
+<div *ngIf="part.type === 'message'" 
+class="bg-gray-200 text-gray-700 shadow-2xl rounded-lg opacity-80 text-sm border-l-4 p-2 flex flex-col"
+[ngStyle]="{'border-color': (part.content | castToMessage)?.sender?.color || '#333'}"
+>
+  <div class="font-semibold">{{(part.content | castToMessage)?.sender?.name}}</div>
+  <div *ngFor="let innerPart of (part.content | castToMessage)?.parts">
+    <div *ngIf="innerPart.type === 'media'" (click)="openModal($event,innerPart.content)">
+        <img *ngIf="(innerPart.content | castToMedia)?.type === 'image'" [src]="(innerPart.content | castToMedia)?.path" class="w-20" [alt]="innerPart.id" />
+    </div>
+    <p *ngIf="innerPart.type === 'text' ||innerPart.type === 'link' ">{{innerPart.content}}</p>
+  </div>
+</div>

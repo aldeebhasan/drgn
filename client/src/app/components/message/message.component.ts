@@ -2,10 +2,11 @@ import { Component, Input } from '@angular/core';
 import { Message } from '../../shared/models/message.model';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
+import { MessagePartComponent } from '../message-part/message-part.component';
 
 @Component({
   selector: 'app-message',
-  imports: [CommonModule],
+  imports: [CommonModule,MessagePartComponent],
   templateUrl: './message.component.html',
 })
 export class MessageComponent {

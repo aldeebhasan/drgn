@@ -11,6 +11,7 @@ import { Room } from '../../shared/models/room.model';
 import { ApiService } from '../../services/api.service';
 import { Part } from '../../shared/models/part.model';
 import { IconComponent } from '../icon/icon.component';
+import { Media } from '../../shared/models/media.model';
 
 @Component({
   selector: 'app-chat',
@@ -21,8 +22,11 @@ import { IconComponent } from '../icon/icon.component';
 export class ChatComponent implements OnInit {
 
   @ViewChild('chatWindow') chatWindow?: ElementRef;
+  @ViewChild('inputMessage') inputMessage?: ElementRef;
   sender?: User;
   room?: Room;
+  media: Array<Media> = [];
+  mediaLoading: boolean = false;
   @Input() messages: Array<Message> = [];
   newMessage: string = ''; // Input field value
   replyToMessage?: Message = undefined;
@@ -43,22 +47,21 @@ export class ChatComponent implements OnInit {
 
   // Send a text message
   sendMessage() {
-    if (this.newMessage.trim()) {
+    if (this.newMessage.trim() || this.media.length > 1) {
       let type: 'link' | 'text' = this.newMessage.startsWith('http') ? 'link' : 'text';
 
       const parts: Part[] = [];
+      //reply part
       if (this.replyToMessage) {
-        let content = `Reply to ${this.replyToMessage.sender?.name}: `;
-        let part = this.replyToMessage.parts[this.replyToMessage.parts.length-1];
-        if (part.type === 'text' || part.type === 'link') {
-          content += part.content;
-        } else if (part.type === 'image') {
-          content += "Image";
-        }
-        parts.push({ type: 'message', content: content })
+        parts.push({ type: 'message', content: this.replyToMessage })
       }
-
+      //text part
       parts.push({ type: type, content: this.newMessage });
+      //media part
+      this.media.forEach((item: Media) => {
+        parts.push({ type: 'media', content: item })
+      })
+
       let msg: Message = {
         sender: this.sender,
         parts: parts,
@@ -71,18 +74,17 @@ export class ChatComponent implements OnInit {
   }
 
   // Send an image message
-  async sendImageMessage(event: any) {
+  async addMedia(event: any) {
     let file = event.target.files[0];
 
+    this.mediaLoading = true;
     const response = await this.apiService.uploadImage(file);
+    this.mediaLoading = false;
+    this.media.push({ type: 'image', path: response.data.url || '' });
+  }
 
-    let msg: Message = {
-      sender: this.sender,
-      parts: [{ type: 'image', content: response.data.url || '' }],
-      createdAt: new Date().toLocaleString(),
-    };
-    this.chatService.sendMessage(msg, this.room);
-    this.afterMessageAdd();
+  removeMedia(index: number) {
+    this.media.splice(index, 1);
   }
 
 
@@ -90,6 +92,7 @@ export class ChatComponent implements OnInit {
   afterMessageAdd() {
     this.newMessage = '';
     this.replyToMessage = undefined;
+    this.media = [];
     setTimeout(() => {
       this.chatWindow?.nativeElement.scroll({
         top: this.chatWindow.nativeElement.scrollHeight,
@@ -98,6 +101,12 @@ export class ChatComponent implements OnInit {
     }, 100);
 
   }
+
+  replyTo(message: Message) {
+    this.inputMessage?.nativeElement.focus()
+    this.replyToMessage = message;
+  }
+
 
   isLocal(message: Message): boolean {
     return message.sender?.id === this.authService.user()?.id;

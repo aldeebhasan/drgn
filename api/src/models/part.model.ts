@@ -1,5 +1,7 @@
 import { IsNotEmpty, IsString } from 'class-validator';
 import { Optional } from '@nestjs/common';
+import { Message } from './message.model';
+import { Media } from './media.model';
 
 export class Part {
   @IsString()
@@ -7,8 +9,7 @@ export class Part {
   id?: string;
   @IsString()
   @IsNotEmpty()
-  type?: 'link' | 'text' | 'image';
-  @IsString()
+  type?: 'link' | 'text' | 'media' | 'message';
   @IsNotEmpty()
-  content?: string = '';
+  content?: string | Message | Media = '';
 }
