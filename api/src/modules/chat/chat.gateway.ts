@@ -16,6 +16,7 @@ import { Cache } from 'cache-manager';
 import { WsExceptionsFilter } from './filters/ws-exceptions.filter';
 import { ResponseDto } from '../../core/dtos/response.dto';
 import { validationPipe } from '../../core/pipes/validation.pipe';
+import { ChatService } from './chat.service';
 
 @WebSocketGateway({ namespace: '/chat', cors: { origin: '*' } })
 @UsePipes(validationPipe)
@@ -23,7 +24,10 @@ import { validationPipe } from '../../core/pipes/validation.pipe';
 export class ChatGateway {
   @WebSocketServer() server: Server; // Access to the WebSocket server instance
 
-  constructor(@Inject(CACHE_MANAGER) private cacheManager: Cache) {}
+  constructor(
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
+    private chatService: ChatService,
+  ) {}
 
   async getRooms(): Promise<Record<string, Room> | null> {
     return this.cacheManager.get<Record<string, Room>>('rooms');

@@ -1,17 +1,20 @@
-import { inject, Injectable } from '@angular/core';
-import { CookieService } from 'ngx-cookie-service';
-import { User } from '../shared/models/user.model';
-import { Room } from '../shared/models/room.model';
-
+import { inject, Injectable } from "@angular/core";
+import { CookieService } from "ngx-cookie-service";
+import { User } from "../shared/models/user.model";
+import { Room } from "../shared/models/room.model";
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: "root",
 })
 export class AuthService {
-
   cookieService = inject(CookieService);
-  ROOM_KEY = 'ROOM';
-  USER_KEY = 'USER';
+  ROOM_KEY = "ROOM";
+  USER_KEY = "USER";
+
+  generateUniqueId(): string {
+    const irand = Math.ceil(Math.random() * 1000000);
+    return "G-" + irand;
+  }
 
   login(user: User) {
     this.cookieService.set(this.USER_KEY, JSON.stringify(user));
@@ -26,7 +29,7 @@ export class AuthService {
     let userData = this.cookieService.get(this.USER_KEY);
     let user = userData ? JSON.parse(userData) : undefined;
 
-    return user ? user as User : undefined;
+    return user ? (user as User) : undefined;
   }
   isLogin(): boolean {
     return !!this.user();
@@ -40,11 +43,10 @@ export class AuthService {
     let roomData = this.cookieService.get(this.ROOM_KEY);
     let room = roomData ? JSON.parse(roomData) : undefined;
 
-    return room ? room as Room : undefined;
+    return room ? (room as Room) : undefined;
   }
-  
+
   hasRoom(): boolean {
     return !!this.room();
   }
-
 }

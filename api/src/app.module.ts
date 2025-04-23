@@ -4,7 +4,8 @@ import { join } from 'path';
 import { CacheModule } from '@nestjs/cache-manager';
 import { UploaderModule } from './modules/uploader/uploader.module';
 import { ConfigModule } from '@nestjs/config';
-import { ChatGateway } from './modules/chat/chat.gateway';
+import { ChatModule } from './modules/chat/chat.module';
+import { databaseProviders } from './providers/database.provider';
 
 @Module({
   imports: [
@@ -14,7 +15,8 @@ import { ChatGateway } from './modules/chat/chat.gateway';
     CacheModule.register({ isGlobal: true }),
     ConfigModule.forRoot({ isGlobal: true }),
     UploaderModule,
+    ChatModule,
   ],
-  providers: [ChatGateway],
+  providers: [...databaseProviders],
 })
 export class AppModule {}

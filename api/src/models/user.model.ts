@@ -1,13 +1,33 @@
-import { IsNotEmpty, IsString, MaxLength, MinLength } from 'class-validator';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
+@Entity({ name: 'users' })
 export class User {
-  @IsString()
-  @IsNotEmpty()
-  public id?: string;
+  @PrimaryGeneratedColumn('uuid')
+  id?: string;
 
-  @IsString()
-  @MaxLength(20)
-  @MinLength(3)
-  @IsNotEmpty()
-  public name: string = '';
+  @Column()
+  name: string;
+
+  @Column({ unique: true })
+  email: string;
+
+  @Column({ nullable: true })
+  mobile?: string;
+
+  @Column({ nullable: true })
+  password: string;
+
+  @Column({ default: '' })
+  avatar: string = '';
+
+  @CreateDateColumn()
+  created_at: Date;
+  @UpdateDateColumn()
+  updated_at: Date;
 }
