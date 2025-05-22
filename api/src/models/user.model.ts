@@ -1,15 +1,19 @@
 import {
+  BaseEntity,
   Column,
   CreateDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { Room } from './room.model';
+import { Activity } from './activities.model';
 
 @Entity({ name: 'users' })
-export class User {
-  @PrimaryGeneratedColumn('uuid')
-  id?: string;
+export class User extends BaseEntity {
+  @PrimaryGeneratedColumn()
+  id: number;
 
   @Column()
   name: string;
@@ -21,13 +25,19 @@ export class User {
   mobile?: string;
 
   @Column({ nullable: true })
-  password: string;
+  password?: string;
 
   @Column({ default: '' })
-  avatar: string = '';
+  image: string = '';
 
   @CreateDateColumn()
   created_at: Date;
   @UpdateDateColumn()
   updated_at: Date;
+
+  @OneToMany(() => Room, (relation) => relation.user)
+  rooms: Array<Room>;
+
+  @OneToMany(() => Activity, (relation) => relation.user)
+  logs: Array<Activity>;
 }

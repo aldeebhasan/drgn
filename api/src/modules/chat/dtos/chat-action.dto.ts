@@ -1,16 +1,11 @@
-import { IsObject, ValidateNested } from 'class-validator';
-import { User } from '../../../models/user.model';
-import { Type } from 'class-transformer';
-import { Room } from '../../../models/room.model';
+import { IsNotEmpty, IsNumber } from 'class-validator';
 
 export class ChatActionDto {
-  @IsObject()
-  @ValidateNested()
-  @Type(() => User)
-  user: User;
+  @IsNumber()
+  @IsNotEmpty()
+  user_id: number;
 
-  @IsObject()
-  @ValidateNested()
-  @Type(() => Room)
-  room: Room;
+  @IsNumber()
+  @IsNotEmpty()
+  room_id: number;
 }

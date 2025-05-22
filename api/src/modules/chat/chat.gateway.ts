@@ -17,6 +17,8 @@ import { WsExceptionsFilter } from './filters/ws-exceptions.filter';
 import { ResponseDto } from '../../core/dtos/response.dto';
 import { validationPipe } from '../../core/pipes/validation.pipe';
 import { ChatService } from './chat.service';
+import { RoomActionDto } from './dtos/room-action.dto';
+import { User } from '../../models/user.model';
 
 @WebSocketGateway({ namespace: '/chat', cors: { origin: '*' } })
 @UsePipes(validationPipe)
@@ -34,39 +36,42 @@ export class ChatGateway {
   }
 
   @SubscribeMessage('create')
-  async handleCreateRoom(
-    @MessageBody() data: ChatActionDto,
+  async createRoom(
+    @MessageBody() data: RoomActionDto,
     @ConnectedSocket() client: Socket,
   ) {
-    const { room } = data;
-    const rooms = (await this.getRooms()) || {};
-    if (rooms[room.name]) {
-      throw new WsException('Room exist, join it if you want!');
+    let room = await this.chatService.getRoomByName(data.name);
+    if (room) {
+      throw new WsException(
+        'Room with same name already exist, join it if you want!',
+      );
     }
-    rooms[room.name] = room;
-    await this.cacheManager.set<Record<string, Room>>('rooms', rooms);
+    room = await this.chatService.createRoom(
+      data.user_id,
+      data.name,
+      data.password || '',
+    );
     client.emit('success', ResponseDto.success(room));
   }
 
   @SubscribeMessage('join')
   async handleJoin(
-    @MessageBody() data: ChatActionDto,
+    @MessageBody() data: RoomActionDto,
     @ConnectedSocket() client: Socket,
   ) {
-    const { user, room } = data;
-    const rooms = (await this.getRooms()) || {};
-    if (!rooms[room.name]) {
-      throw new WsException('Room Not found');
+    const room = await this.chatService.joinRoom(data.name, data.password);
+    if (!room) {
+      throw new WsException(
+        'Failed to join the room! Maybe notfound or wrong password',
+      );
     }
-    if (rooms[room.name].password !== room.password) {
-      throw new WsException('Failed to join the room');
-    }
-    if (client.rooms.has(room.name)) {
+    if (client.rooms.has(`room_${room.id}`)) {
+      const user = await User.findOneByOrFail({ id: data.user_id });
       this.server
-        .to(room.name)
-        .emit('join', `${user.name} has joined the chat.`); // Broadcast to all clients
+        .to(`room_${room.id}`)
+        .emit('join', `${user.name} has joined the chat.`);
     }
-    await client.join(room.name); // Join the user to a room (optional)
+    await client.join(`room_${room.id}`);
     client.emit('success', ResponseDto.success(room));
   }
 
@@ -75,14 +80,20 @@ export class ChatGateway {
     @MessageBody() data: ChatActionDto,
     @ConnectedSocket() client: Socket,
   ) {
-    const { user, room } = data;
-    await client.leave(room.name); // leave the user from a room (optional)
-    this.server.to(room.name).emit('leave', `${user.name} has left the chat.`); // Broadcast to all clients
+    const user = await User.findOneByOrFail({ id: data.user_id });
+    await client.leave(`room_${data.room_id}`);
+    this.server
+      .to(`room_${data.room_id}`)
+      .emit('leave', `${user.name} has left the chat.`);
   }
 
   @SubscribeMessage('message')
-  handleMessage(@MessageBody() data: SendMessageDto): void {
-    const { message, room } = data;
-    this.server.to(room.name).emit('message', message); // Broadcast the message to all clients
+  handleMessage(@MessageBody() data: SendMessageDto) {
+    const message = this.chatService.createMessage(
+      data.user_id,
+      data.room_id,
+      data.parts,
+    );
+    this.server.to(`room_${data.room_id}`).emit('message', message);
   }
 }

@@ -1,14 +1,26 @@
-import { IsObject, ValidateNested } from 'class-validator';
-import { Message } from '../../../models/message.model';
+import { IsEnum, IsNotEmpty, IsNumber, ValidateNested } from 'class-validator';
 import { Type } from 'class-transformer';
-import { Room } from '../../../models/room.model';
+import { PartTypeEnums } from '../../../enums/part-type.enums';
+
+export class PartDto {
+  @IsNotEmpty()
+  @IsEnum(PartTypeEnums)
+  type: PartTypeEnums;
+
+  @IsNotEmpty()
+  content: string | number;
+}
 
 export class SendMessageDto {
-  @ValidateNested()
-  message: Message;
+  @IsNumber()
+  @IsNotEmpty()
+  user_id: number;
 
-  @IsObject()
-  @ValidateNested()
-  @Type(() => Room)
-  room: Room;
+  @IsNumber()
+  @IsNotEmpty()
+  room_id: number;
+
+  @ValidateNested({ each: true })
+  @Type(() => PartDto)
+  parts: Array<PartDto>;
 }

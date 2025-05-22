@@ -1,19 +1,17 @@
-import { User } from './user.model';
-import { Part } from './part.model';
 import {
   BaseEntity,
+  Column,
   CreateDateColumn,
   Entity,
   JoinColumn,
   ManyToOne,
-  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { Room } from './room.model';
+import { User } from './user.model';
 
-@Entity({ name: 'messages' })
-export class Message extends BaseEntity {
+@Entity({ name: 'activities' })
+export class Activity extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -21,15 +19,17 @@ export class Message extends BaseEntity {
   @JoinColumn({ name: 'user_id' })
   user: User;
 
-  @ManyToOne(() => Room)
-  @JoinColumn({ name: 'room_id' })
-  room: Room;
+  @Column()
+  content: string;
+
+  @Column()
+  loggable_type: string;
+
+  @Column('int')
+  loggable_id: number;
 
   @CreateDateColumn()
   created_at: Date;
   @UpdateDateColumn()
   updated_at: Date;
-
-  @OneToMany(() => Part, (relation) => relation.message)
-  parts: Array<Part>;
 }

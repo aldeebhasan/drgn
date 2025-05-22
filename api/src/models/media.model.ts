@@ -1,14 +1,28 @@
-import { IsNotEmpty, IsString } from 'class-validator';
-import { Optional } from '@nestjs/common';
+import {
+  BaseEntity,
+  Column,
+  CreateDateColumn,
+  Entity,
+  JoinColumn,
+  OneToOne,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
+import { MediaTypeEnums } from '../enums/media-type.enums';
 
-export class Media {
-  @IsString()
-  @Optional()
-  id?: string;
-  @IsString()
-  @IsNotEmpty()
-  type?: 'image' | 'video' | 'file' | 'audio';
-  @IsString()
-  @IsNotEmpty()
+@Entity()
+export class Media extends BaseEntity {
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @Column()
+  type: MediaTypeEnums;
+
+  @Column()
   path?: string = '';
+
+  @CreateDateColumn()
+  created_at: Date;
+  @UpdateDateColumn()
+  updated_at: Date;
 }
