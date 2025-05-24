@@ -1,56 +1,40 @@
 import { Injectable } from '@nestjs/common';
 import { Room } from '../../models/room.model';
-import * as bcrypt from 'bcrypt';
 import { Message } from '../../models/message.model';
-import { Part } from '../../models/part.model';
-import { PartDto } from './dtos/send-message.dto';
+import { SendMessageDto } from './dtos/send-message.dto';
+import { Server, Socket } from 'socket.io';
+import { User } from '../../models/user.model';
 
 @Injectable()
 export class ChatService {
-  async getRoomByName(name: string): Promise<Room | null> {
-    return await Room.findOneBy({ name: name });
-  }
-
-  async createRoom(
-    user_id: number,
-    name: string,
-    password: string = '',
-  ): Promise<Room> {
-    const salt = await bcrypt.genSalt();
-    const hashedPassword = password ? await bcrypt.hash(password, salt) : '';
-    return Room.create({
-      user: { id: user_id },
-      name: name,
-      password: hashedPassword,
-    });
-  }
-
-  async joinRoom(name: string, password: string = '') {
-    const room = await this.getRoomByName(name);
-    if (room) {
-      const isMatch = room.password
-        ? await bcrypt.compare(password, room.password)
-        : true;
-
-      if (isMatch) {
-        return room;
-      }
+  notifyAll(server: Server, action: string, messaeg?: any, group?: string) {
+    if (group) {
+      server.to(group).emit(action, messaeg || '');
+    } else {
+      server.emit(action, messaeg || '');
     }
-    return null;
   }
 
-  createMessage(user_id: number, room_id: number, parts: Array<PartDto> = []) {
-    const messageParts = parts.map((part) => {
-      return {
-        type: part.type,
-        content: part.content as string,
-      };
-    });
+  joinRoom(server: Server, client: Socket, user: User, room: Room) {
+    this.notifyAll(
+      server,
+      'join',
+      `${user.name} has joined the chat.`,
+      `room_${room.id}`,
+    );
 
-    return Message.create({
-      user: { id: user_id },
-      room: { id: room_id },
-      parts: messageParts,
-    });
+    client.join(`room_${room.id}`);
   }
+
+  leaveRoom(server: Server, client: Socket, user: User, room: Room) {
+    client.leave(`room_${room.id}`);
+    this.notifyAll(
+      server,
+      'leave',
+      `${user.name} has left the chat.`,
+      `room_${room.id}`,
+    );
+  }
+
+
 }

@@ -6,6 +6,10 @@ import { UploaderModule } from './modules/uploader/uploader.module';
 import { ConfigModule } from '@nestjs/config';
 import { ChatModule } from './modules/chat/chat.module';
 import { databaseProviders } from './providers/database.provider';
+import { UsersModule } from './modules/users/users.module';
+import { RoomsModule } from './modules/rooms/rooms.module';
+import { MessagesService } from './modules/messages/messages.service';
+import { MessagesModule } from './modules/messages/messages.module';
 
 @Module({
   imports: [
@@ -16,7 +20,10 @@ import { databaseProviders } from './providers/database.provider';
     ConfigModule.forRoot({ isGlobal: true }),
     UploaderModule,
     ChatModule,
+    UsersModule,
+    RoomsModule,
+    MessagesModule,
   ],
-  providers: [...databaseProviders],
+  providers: [...databaseProviders, MessagesService],
 })
 export class AppModule {}
