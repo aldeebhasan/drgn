@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { User } from '../../models/user.model';
 import { UserCreateDto } from './dtos/user-create.dto';
-import { Room } from '../../models/room.model';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
@@ -38,5 +37,9 @@ export class UsersService {
 
   async checkPassword(user: User, password: string) {
     return user.password ? await bcrypt.compare(password, user.password) : true;
+  }
+
+  getToken(user: User) {
+    return user.id + '-23471987498312794791387498023';
   }
 }
