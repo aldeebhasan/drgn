@@ -19,4 +19,7 @@ export class UserResponseDto {
 
   @Expose()
   created_at: Date;
+
+  @Expose()
+  is_guest: boolean;
 }

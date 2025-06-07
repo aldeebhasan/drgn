@@ -30,6 +30,9 @@ export class User extends BaseEntity {
   @Column({ default: '' })
   image: string = '';
 
+  @Column('boolean')
+  is_guest: boolean = false;
+
   @CreateDateColumn()
   created_at: Date;
   @UpdateDateColumn()

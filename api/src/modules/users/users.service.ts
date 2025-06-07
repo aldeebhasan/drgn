@@ -32,7 +32,8 @@ export class UsersService {
       email: data.email ?? '',
       mobile: data.mobile ?? '',
       image: data.image ?? '',
-    });
+      is_guest: data.is_guest ?? false,
+    }).save();
   }
 
   async checkPassword(user: User, password: string) {

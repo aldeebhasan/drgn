@@ -2,6 +2,8 @@ import { inject, Injectable } from "@angular/core";
 import { CookieService } from "ngx-cookie-service";
 import { User } from "../shared/models/user.model";
 import { Room } from "../shared/models/room.model";
+import { ApiService } from "./api.service";
+import { ToastrService } from "ngx-toastr";
 
 @Injectable({
   providedIn: "root",
@@ -9,15 +11,36 @@ import { Room } from "../shared/models/room.model";
 export class AuthService {
   cookieService = inject(CookieService);
   ROOM_KEY = "ROOM";
+  TOKEN_KEY = "TOKEN";
   USER_KEY = "USER";
+
+  constructor(
+    private apiServie: ApiService,
+    private toastrService: ToastrService
+  ) {}
 
   generateUniqueId(): string {
     const irand = Math.ceil(Math.random() * 1000000);
     return "G-" + irand;
   }
 
-  login(user: User) {
+  async register(user: User) {
+    return this.apiServie.register(user);
+  }
+  async registerAsGuest(user: User) {
+    return this.apiServie.registerAsGuest(user);
+  }
+
+  async login(email: string, password: string) {
+    return this.apiServie.login({
+      username: email,
+      password: password,
+    });
+  }
+
+  setAuth(user: User, token: string) {
     this.cookieService.set(this.USER_KEY, JSON.stringify(user));
+    this.cookieService.set(this.TOKEN_KEY, token);
   }
 
   logout() {

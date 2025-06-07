@@ -16,6 +16,6 @@ export class MessagesService {
       user: { id: message.user_id },
       room: { id: message.room_id },
       parts: messageParts,
-    });
+    }).save();
   }
 }

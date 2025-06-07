@@ -1,23 +1,22 @@
-import { Component } from '@angular/core';
-import { ChatComponent } from '../../components/chat/chat.component';
-import { ContactsComponent } from '../../components/contacts/contacts.component';
-import { ChatService } from '../../services/chat.service';
-import { Message } from '../../shared/models/message.model';
-import { User } from '../../shared/models/user.model';
+import { Component } from "@angular/core";
+import { ChatComponent } from "../../components/chat/chat.component";
+import { ContactsComponent } from "../../components/contacts/contacts.component";
+import { ChatService } from "../../services/chat.service";
+import { Message } from "../../shared/models/message.model";
+import { User } from "../../shared/models/user.model";
 
 @Component({
-  selector: 'app-home',
+  selector: "app-home",
   imports: [ChatComponent, ContactsComponent],
-  templateUrl: './home.component.html',
+  templateUrl: "./home.component.html",
 })
 export class HomeComponent {
-
   messages: Array<Message> = [];
   audio?: HTMLAudioElement;
 
   constructor(private chatService: ChatService) {
     this.audio = new Audio();
-    this.audio.src = '/assets/beep.mp3';
+    this.audio.src = "/assets/beep.mp3";
     this.audio.load();
   }
 
@@ -42,14 +41,15 @@ export class HomeComponent {
 
   generateSystemMsg(message: string): Message {
     return {
-      sender: new User('0', 'System'),
+      sender: { id: 0, name: "System" } as User,
       createdAt: new Date().toLocaleString(),
-      type: 'system',
-      parts: [{
-        content: message,
-        type: 'text',
-      }],
+      type: "system",
+      parts: [
+        {
+          content: message,
+          type: "text",
+        },
+      ],
     };
   }
-
 }

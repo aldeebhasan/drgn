@@ -1,27 +1,107 @@
-<div class="h-screen  flex flex-col justify-center items-center ">
+<div class="min-h-screen flex flex-col justify-center items-center">
   <img src="/assets/logo@full.png" alt="Drgn" class="h-30" />
   <div class="py-8 px-6 w-96 bg-white rounded-md shadow-2xl">
+    <div class="flex justify-center items-stretch h mb-6 w-full">
+      <button
+        (click)="setAuthMode('guest')"
+        [class.bg-black]="authMode === 'guest'"
+        [class.text-white]="authMode === 'guest'"
+        class="px-4 py-2 rounded-l-lg border border-gray-300 hover:bg-gray-200 cursor-pointer"
+      >
+        Guest
+      </button>
+      <button
+        (click)="setAuthMode('register')"
+        [class.bg-black]="authMode === 'register'"
+        [class.text-white]="authMode === 'register'"
+        class="px-4 py-2 border-t border-b border-gray-300 hover:bg-gray-200 cursor-pointer"
+      >
+        Register
+      </button>
+      <button
+        (click)="setAuthMode('login')"
+        [class.bg-black]="authMode === 'login'"
+        [class.text-white]="authMode === 'login'"
+        class="px-4 py-2 rounded-r-lg border border-gray-300 hover:bg-gray-200 cursor-pointer"
+      >
+        Login
+      </button>
+    </div>
+
     <div class="h-fit pb-4 relative" id="form">
-      <form id="contactForm" [formGroup]="form" (ngSubmit)="submitForm()">
-        <div class="mb-6">
-            <div class="mx-0 mb-1 sm:mb-4">
-              <label class="font-semibold">Your Name</label>
-              <input
-                type="text"
-                formControlName="name"
-                autocomplete="given-name"  
-                autofocus
-                placeholder="Your name"
-                class="my-2 w-full text-gray-600 rounded-md border  py-2 pl-2 pr-4 shadow-md sm:mb-0 focus:ring-2 focus:outline-none focus:bg-gray-100"
-              />
-              <div *ngIf="form?.get('name')?.invalid && form?.get('name')?.touched" class="text-red-600 p-1">Name is required & at least 3 characters.</div>
+      <form [formGroup]="form" (ngSubmit)="submitForm()">
+        <!-- Name field (shown for register modes) -->
+        <div class="mb-6" *ngIf="authMode !== 'login'">
+          <div class="mx-0 mb-1 sm:mb-4">
+            <label class="font-semibold">Your Name</label>
+            <input
+              type="text"
+              formControlName="name"
+              autocomplete="given-name"
+              autofocus
+              placeholder="Your name"
+              class="my-2 w-full text-gray-600 rounded-md border py-2 pl-2 pr-4 shadow-md sm:mb-0 focus:ring-2 focus:outline-none focus:bg-gray-100"
+            />
+            <div
+              *ngIf="form?.get('name')?.invalid && form?.get('name')?.touched"
+              class="text-red-600 p-1"
+            >
+              Name is required & at least 3 characters.
             </div>
+          </div>
         </div>
+
+        <!-- Email field (shown for registerFull and login) -->
+        <div class="mb-6" *ngIf="authMode !== 'guest'">
+          <div class="mx-0 mb-1 sm:mb-4">
+            <label class="font-semibold">Email</label>
+            <input
+              type="email"
+              formControlName="email"
+              autocomplete="email"
+              placeholder="Your email"
+              class="my-2 w-full text-gray-600 rounded-md border py-2 pl-2 pr-4 shadow-md sm:mb-0 focus:ring-2 focus:outline-none focus:bg-gray-100"
+            />
+            <div
+              *ngIf="form?.get('email')?.invalid && form?.get('email')?.touched"
+              class="text-red-600 p-1"
+            >
+              Valid email is required.
+            </div>
+          </div>
+        </div>
+
+        <!-- Password field (shown for registerFull and login) -->
+        <div class="mb-6" *ngIf="authMode !== 'guest'">
+          <div class="mx-0 mb-1 sm:mb-4">
+            <label class="font-semibold">Password</label>
+            <input
+              type="password"
+              formControlName="password"
+              autocomplete="current-password"
+              placeholder="Your password"
+              class="my-2 w-full text-gray-600 rounded-md border py-2 pl-2 pr-4 shadow-md sm:mb-0 focus:ring-2 focus:outline-none focus:bg-gray-100"
+            />
+            <div
+              *ngIf="
+                form?.get('password')?.invalid && form?.get('password')?.touched
+              "
+              class="text-red-600 p-1"
+            >
+              Password must be at least 6 characters.
+            </div>
+          </div>
+        </div>
+
         <div class="text-center">
-          <button type="submit" class="w-full bg-black focus:bg-gray-700 text-white px-6 py-3 font-xl rounded-xl sm:mb-0 cursor-pointer">Register</button>
+          <button
+            type="submit"
+            class="w-full bg-black focus:bg-gray-700 text-white px-6 py-3 font-xl rounded-xl sm:mb-0 cursor-pointer"
+          >
+            {{ authMode === "login" ? "Login" : "Register" }}
+          </button>
         </div>
       </form>
-
     </div>
   </div>
 </div>

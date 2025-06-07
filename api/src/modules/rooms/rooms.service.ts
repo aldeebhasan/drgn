@@ -23,7 +23,7 @@ export class RoomsService {
       user: { id: user_id },
       name: name,
       password: hashedPassword,
-    });
+    }).save();
   }
 
   async checkPassword(room: Room, password: string) {
