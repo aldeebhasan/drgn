@@ -2,7 +2,9 @@ import {
   BaseEntity,
   Column,
   CreateDateColumn,
-  Entity, JoinColumn, ManyToOne,
+  Entity,
+  JoinColumn,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -17,6 +19,9 @@ export class Media extends BaseEntity {
 
   @Column()
   type: MediaTypeEnums;
+
+  @Column()
+  name: string = '';
 
   @Column()
   path: string = '';
