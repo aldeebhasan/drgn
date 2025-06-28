@@ -1,42 +1,155 @@
-<div class="h-screen  flex flex-col justify-center items-center">
-  <img src="/assets/logo@full.png" alt="Drgn" class="h-30" />
-    <div class="py-8 px-6 w-96 bg-white rounded-md shadow-2xl">
-      <div class="h-fit pb-6 relative" id="form">
-        <form id="contactForm" [formGroup]="form" (ngSubmit)="submitForm($event)">
-          <div class="mb-6">
-            <div class="mx-0 mb-1 sm:mb-4">
-              <label class="font-semibold">Room Name</label>
-                <input
-                  type="text"
-                  formControlName="name"
-                  autofocus
-                  placeholder="Name..."
-                  class="my-2 w-full text-gray-600 rounded-md border  py-2 pl-2 pr-4 shadow-md sm:mb-0 focus:ring-2 focus:outline-none focus:bg-gray-100"
-                />
-                <div *ngIf="form?.get('name')?.invalid && form?.get('name')?.touched" class="text-red-600">Name is required.</div>
+<div class="min-h-screen flex flex-col justify-center items-center">
+    <img src="/assets/logo@full.png" alt="Drgn" class="h-30" />
+    <!-- Main card -->
+    <div
+        class="relative w-full max-w-md bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-200 transition-all duration-500 hover:shadow-lg z-10"
+    >
+        <!-- Tab selection -->
+        <div class="flex border-b border-gray-200" *ngIf="!createdRoom">
+            <button
+                (click)="activeTab = 'join'"
+                class="flex-1 py-4 px-6 text-center font-medium transition-all duration-300 cursor-pointer"
+                [class]="activeTab === 'join' ? 'text-green-600 bg-green-50' : 'text-gray-500 hover:text-gray-600'"
+            >
+                Join Room
+            </button>
+            <button
+                (click)="activeTab = 'create'"
+                class="flex-1 py-4 px-6 text-center font-medium transition-all duration-300 cursor-pointer"
+                [class]="activeTab === 'create' ? 'text-green-600 bg-green-50' : 'text-gray-500 hover:text-gray-600'"
+            >
+                Create Room
+            </button>
+        </div>
+
+        <!-- Form container -->
+        <div *ngIf="!createdRoom" class="p-8">
+            <!-- Create Room Form -->
+            <form *ngIf="activeTab === 'create'" [formGroup]="createForm" (ngSubmit)="createRoom()" class="space-y-6">
+                <div class="space-y-2">
+                    <label class="block text-sm font-medium text-gray-700">
+                        Room Name
+                        <span class="text-red-600 p-1 text-xs" *ngIf="createForm?.get('name')?.invalid && createForm?.get('name')?.touched">
+                            (Required & at least 3 characters)
+                        </span>
+                    </label>
+                    <input
+                        type="text"
+                        formControlName="name"
+                        class="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-50 transition-all"
+                        placeholder="My Awesome Room"
+                    />
+                </div>
+
+                <div class="space-y-2">
+                    <label class="block text-sm font-medium text-gray-700">
+                        Room Code
+                        <span class="text-red-600 p-1 text-xs" *ngIf="createForm?.get('code')?.invalid && createForm?.get('code')?.touched">
+                            (Code is required)
+                        </span>
+                    </label>
+                    <div class="relative">
+                        <input
+                            type="text"
+                            formControlName="code"
+                            class="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-50 transition-all tracking-widest"
+                            placeholder="ABCD123456"
+                            maxlength="10"
+                        />
+                        <div
+                            class="absolute border-l-1 text-gray-300 text-xs right-0 top-0 bottom-0 px-2 flex items-center cursor-pointer"
+                            (click)="generateRoomCode()"
+                        >
+                            <app-icon name="code-gen" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="space-y-2">
+                    <label class="block text-sm font-medium text-gray-700">Room Password (optional)</label>
+                    <input
+                        type="password"
+                        formControlName="password"
+                        class="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indgreenigo-500 focus:border-green-50 transition-all"
+                        placeholder="••••••••"
+                    />
+                </div>
+
+                <div class="pt-4">
+                    <button
+                        type="submit"
+                        class="w-full py-3 px-6 bg-green-600 hover:bg-green-700 rounded-lg text-white font-medium shadow hover:shadow-md transition-all duration-300 transform hover:-translate-y-0.5 cursor-pointer"
+                    >
+                        Create Room
+                    </button>
+                </div>
+            </form>
+
+            <!-- Join Room Form -->
+            <form *ngIf="activeTab === 'join'" [formGroup]="joinForm" (ngSubmit)="joinRoom()" class="space-y-6">
+                <div class="space-y-2">
+                    <label class="block text-sm font-medium text-gray-700">
+                        Room Code
+                        <span class="text-red-600 p-1 text-xs" *ngIf="joinForm?.get('code')?.invalid && joinForm?.get('code')?.touched">
+                            (Code is required)
+                        </span>
+                    </label>
+                    <div class="relative">
+                        <input
+                            type="text"
+                            formControlName="code"
+                            class="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-50 transition-all tracking-widest"
+                            placeholder="ABCD123456"
+                            maxlength="10"
+                        />
+                    </div>
+                </div>
+
+                <div class="space-y-2">
+                    <label class="block text-sm font-medium text-gray-700">Password (if required)</label>
+                    <input
+                        type="password"
+                        formControlName="password"
+                        class="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-50 transition-all"
+                        placeholder="••••••••"
+                    />
+                </div>
+
+                <div class="pt-4">
+                    <button
+                        type="submit"
+                        class="w-full py-3 px-6 bg-green-600 hover:bg-green-700 rounded-lg text-white font-medium shadow hover:shadow-md transition-all duration-300 transform hover:-translate-y-0.5 cursor-pointer"
+                    >
+                        Join Room
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Room code display (shown after creation) -->
+        <div *ngIf="createdRoom" class="bg-gray-50 border-t border-gray-200 p-8">
+            <div class="text-center">
+                <p class="text-gray-600 mb-2">Share this code with others:</p>
+                <div class="bg-white px-6 py-4 rounded-lg inline-block border border-gray-200 shadow-sm">
+                    <p class="text-2xl font-bold text-gray-800 tracking-widest">{{ createdRoom.code }}</p>
+                </div>
+                <button
+                    (click)="copyToClipboard(createdRoom.code)"
+                    class="mt-4 text-sm text-green-600 hover:text-green-800 flex items-center justify-center mx-auto cursor-pointer"
+                >
+                    Copy to clipboard
+                </button>
+
+                <button
+                    (click)="afterJoinOrCreate(createdRoom)"
+                    class="mt-4 w-full py-3 px-4 bg-green-600 hover:bg-green-700 rounded-lg text-white font-medium shadow hover:shadow-md transition-all duration-300 transform hover:-translate-y-0.5 cursor-pointer"
+                >
+                    Move To Chat Room
+                </button>
             </div>
-            <div class="mx-0 mb-1 sm:mb-4">
-              <label class="font-semibold">Room Password</label>
-                  <input
-                    type="password"
-                    formControlName="password"
-                    placeholder="Password..."
-                    class="my-2 w-full text-gray-600 rounded-md border  py-2 pl-2 pr-4 shadow-md sm:mb-0 focus:ring-2 focus:outline-none focus:bg-gray-100"
-                  />
-                  <div *ngIf="form?.get('password')?.invalid && form?.get('password')?.touched" class="text-red-600">Password is required and at least 8 characters.</div>
-              </div>
-          </div>
-          <div class="text-center flex sm:flex-row flex-col gap-2 items-center">
-            <button type="submit" value="join" class="sm:w-2/5 w-full bg-green-600 focus:bg-green-500 text-white px-6 py-3 font-xl rounded-xl sm:mb-0 cursor-pointer">Join</button>
-            <div class="relative flex flex-col items-center justify-center sm:w-1/5 w-full">
-              <div class="h-0.5 bg-gray-200 w-full absolute "></div>
-              <div class="z-10 bg-white px-1">OR</div>
-            </div>
-            <button type="submit" value="create" class="sm:w-2/5 w-full bg-black focus:bg-gray-700 text-white px-6 py-3 font-xl rounded-xl sm:mb-0 cursor-pointer">Create</button>
-          </div>
-        </form>
-  
-      </div>
+        </div>
     </div>
-  </div>
-  
+
+    <!-- Footer note -->
+    <p class="mt-8 text-gray-500 text-sm text-center max-w-md">Create private rooms for your friends or join existing ones with a code.</p>
+</div>

@@ -2,11 +2,13 @@ import {
   BaseEntity,
   Column,
   CreateDateColumn,
-  Entity,
+  Entity, JoinColumn, ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { MediaTypeEnums } from '../enums/media-type.enums';
+import { User } from './user.model';
+import { Room } from './room.model';
 
 @Entity()
 export class Media extends BaseEntity {
@@ -17,7 +19,15 @@ export class Media extends BaseEntity {
   type: MediaTypeEnums;
 
   @Column()
-  path?: string = '';
+  path: string = '';
+
+  @ManyToOne(() => User)
+  @JoinColumn({ name: 'user_id' })
+  user: User;
+
+  @ManyToOne(() => Room)
+  @JoinColumn({ name: 'room_id' })
+  room: Room;
 
   @CreateDateColumn()
   created_at: Date;

@@ -1,8 +1,12 @@
 @import "tailwindcss";
-
+@import '@ctrl/ngx-emoji-mart/picker';
 
 .bg {
-    background: conic-gradient(at center top, rgb(150, 150, 150), #ffffff, rgb(150, 150, 150));
+    background-image: url('/assets/bg.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
 }
 
 /* width */

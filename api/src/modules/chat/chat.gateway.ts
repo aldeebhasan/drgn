@@ -21,6 +21,7 @@ import { RoomJoinDto } from './dtos/room-join.dto';
 import { plainToInstance } from 'class-transformer';
 import { RoomResponseDto } from '../rooms/dtos/room-response.dto';
 import { MessagesService } from '../messages/messages.service';
+import { MessageResponseDto } from '../messages/dtos/message-response.dto';
 
 @WebSocketGateway({ namespace: '/chat', cors: { origin: '*' } })
 @UsePipes(validationPipe)
@@ -49,6 +50,7 @@ export class ChatGateway {
     room = await this.roomService.create(
       data.user_id,
       data.name,
+      data.code,
       data.password || '',
     );
     const roomRes = plainToInstance(RoomResponseDto, room);
@@ -63,9 +65,20 @@ export class ChatGateway {
     const room = await this.roomService.findOneByCode(data.code);
     if (!room || !(await this.roomService.checkPassword(room, data.password))) {
       throw new WsException(
-        'Failed to join the room! Maybe notfound or wrong password',
+        'Failed to join the room! Maybe not found or wrong password',
       );
     }
+
+    const roomRes = plainToInstance(RoomResponseDto, room);
+    client.emit('success', ResponseDto.success(roomRes));
+  }
+
+  @SubscribeMessage('subscribe')
+  async handleSubscribe(
+    @MessageBody() data: ChatActionDto,
+    @ConnectedSocket() client: Socket,
+  ) {
+    const room = await this.roomService.findOneOrFail(data.room_id);
     const user = await this.userService.findOneOrFail(data.user_id);
     this.chatService.joinRoom(this.server, client, user, room);
 
@@ -84,13 +97,15 @@ export class ChatGateway {
   }
 
   @SubscribeMessage('message')
-  handleMessage(@MessageBody() data: SendMessageDto) {
-    const message = this.messageService.create(data);
+  async handleMessage(@MessageBody() data: SendMessageDto) {
+    const message = await this.messageService.create(data);
+
+    const msgRes = plainToInstance(MessageResponseDto, message);
 
     this.chatService.notifyAll(
       this.server,
       'message',
-      message,
+      msgRes,
       `room_${data.room_id}`,
     );
   }

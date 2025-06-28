@@ -1,7 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { Room } from '../../models/room.model';
-import { Message } from '../../models/message.model';
-import { SendMessageDto } from './dtos/send-message.dto';
 import { Server, Socket } from 'socket.io';
 import { User } from '../../models/user.model';
 
@@ -15,7 +13,7 @@ export class ChatService {
     }
   }
 
-  joinRoom(server: Server, client: Socket, user: User, room: Room) {
+  async joinRoom(server: Server, client: Socket, user: User, room: Room) {
     this.notifyAll(
       server,
       'join',
@@ -23,11 +21,11 @@ export class ChatService {
       `room_${room.id}`,
     );
 
-    client.join(`room_${room.id}`);
+    await client.join(`room_${room.id}`);
   }
 
-  leaveRoom(server: Server, client: Socket, user: User, room: Room) {
-    client.leave(`room_${room.id}`);
+  async leaveRoom(server: Server, client: Socket, user: User, room: Room) {
+    await client.leave(`room_${room.id}`);
     this.notifyAll(
       server,
       'leave',
@@ -35,6 +33,4 @@ export class ChatService {
       `room_${room.id}`,
     );
   }
-
-
 }

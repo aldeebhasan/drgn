@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsNumber, IsString, MinLength } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsString, Length } from 'class-validator';
 
 export class RoomCreateDto {
   @IsNumber()
@@ -11,7 +11,7 @@ export class RoomCreateDto {
 
   @IsString()
   @IsNotEmpty()
-  @MinLength(3)
+  @Length(10)
   code: string;
 
   @IsString()

@@ -1,4 +1,5 @@
 import {
+  Body,
   Controller,
   Post,
   UploadedFile,
@@ -6,8 +7,12 @@ import {
 } from '@nestjs/common';
 import { UploaderService } from './uploader.service';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { UploadApiErrorResponse, UploadApiResponse } from 'cloudinary';
+import { UploadApiResponse } from 'cloudinary';
 import { ResponseDto } from '../../core/dtos/response.dto';
+import { Media } from '../../models/media.model';
+import { MediaTypeEnums } from '../../enums/media-type.enums';
+import { plainToInstance } from 'class-transformer';
+import { MediaResponseDto } from '../messages/dtos/media-response.dto';
 
 @Controller('uploader')
 export class UploaderController {
@@ -15,14 +20,24 @@ export class UploaderController {
 
   @Post('image')
   @UseInterceptors(FileInterceptor('file'))
-  async image(@UploadedFile('file') file: Express.Multer.File) {
+  async image(
+    @UploadedFile('file') file: Express.Multer.File,
+    @Body('user_id') user_id: number,
+    @Body('room_id') room_id: number,
+  ) {
     return this.service
       .uploadFile(file)
-      .then((response: UploadApiResponse) => {
-        return ResponseDto.success({
-          url: response?.secure_url ?? response.url ?? '',
-          public_id: response.public_id,
-        });
+      .then(async (response: UploadApiResponse) => {
+        const media = await Media.create({
+          user: { id: user_id },
+          room: { id: room_id },
+          path: response?.secure_url ?? response.url ?? '',
+          type: response.resource_type as MediaTypeEnums,
+        }).save();
+
+        const mediaRes = plainToInstance(MediaResponseDto, media);
+
+        return ResponseDto.success(mediaRes);
       })
       .catch((err: Error) => {
         return ResponseDto.error(err.message);

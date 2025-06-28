@@ -6,70 +6,67 @@ import { ApiService } from "./api.service";
 import { ToastrService } from "ngx-toastr";
 
 @Injectable({
-  providedIn: "root",
+    providedIn: "root",
 })
 export class AuthService {
-  cookieService = inject(CookieService);
-  ROOM_KEY = "ROOM";
-  TOKEN_KEY = "TOKEN";
-  USER_KEY = "USER";
+    cookieService = inject(CookieService);
+    ROOM_KEY = "ROOM";
+    TOKEN_KEY = "TOKEN";
+    USER_KEY = "USER";
 
-  constructor(
-    private apiServie: ApiService,
-    private toastrService: ToastrService
-  ) {}
+    constructor(private apiServie: ApiService, private toastrService: ToastrService) {}
 
-  generateUniqueId(): string {
-    const irand = Math.ceil(Math.random() * 1000000);
-    return "G-" + irand;
-  }
+    generateUniqueId(): string {
+        const irand = Math.ceil(Math.random() * 1000000);
+        return "G-" + irand;
+    }
 
-  async register(user: User) {
-    return this.apiServie.register(user);
-  }
-  async registerAsGuest(user: User) {
-    return this.apiServie.registerAsGuest(user);
-  }
+    async register(user: User) {
+        return this.apiServie.register(user);
+    }
+    async registerAsGuest(user: User) {
+        return this.apiServie.registerAsGuest(user);
+    }
 
-  async login(email: string, password: string) {
-    return this.apiServie.login({
-      username: email,
-      password: password,
-    });
-  }
+    async login(email: string, password: string) {
+        return this.apiServie.login({
+            username: email,
+            password: password,
+        });
+    }
 
-  setAuth(user: User, token: string) {
-    this.cookieService.set(this.USER_KEY, JSON.stringify(user));
-    this.cookieService.set(this.TOKEN_KEY, token);
-  }
+    setAuth(user: User, token: string) {
+        this.cookieService.set(this.USER_KEY, JSON.stringify(user));
+        this.cookieService.set(this.TOKEN_KEY, token);
+    }
 
-  logout() {
-    this.cookieService.delete(this.ROOM_KEY);
-    this.cookieService.delete(this.USER_KEY);
-  }
+    logout() {
+        this.cookieService.delete(this.ROOM_KEY);
+        this.cookieService.delete(this.USER_KEY);
+    }
 
-  user(): User | undefined {
-    let userData = this.cookieService.get(this.USER_KEY);
-    let user = userData ? JSON.parse(userData) : undefined;
+    user(): User | undefined {
+        let userData = this.cookieService.get(this.USER_KEY);
+        let user = userData ? new User(JSON.parse(userData)) : undefined;
 
-    return user ? (user as User) : undefined;
-  }
-  isLogin(): boolean {
-    return !!this.user();
-  }
+        return user ? user : undefined;
+    }
+    isLogin(): boolean {
+        return !!this.user();
+    }
 
-  setRoom(room: Room) {
-    this.cookieService.set(this.ROOM_KEY, JSON.stringify(room));
-  }
+    setRoom(room: Room) {
+        this.cookieService.set(this.ROOM_KEY, JSON.stringify(room));
+    }
 
-  room(): Room | undefined {
-    let roomData = this.cookieService.get(this.ROOM_KEY);
-    let room = roomData ? JSON.parse(roomData) : undefined;
+    room(): Room | undefined {
+        let roomData = this.cookieService.get(this.ROOM_KEY);
+        let room = roomData ? new Room(JSON.parse(roomData)) : undefined;
 
-    return room ? (room as Room) : undefined;
-  }
+        return room ? room : undefined;
+    }
 
-  hasRoom(): boolean {
-    return !!this.room();
-  }
+    hasRoom(): boolean {
+        return !!this.room();
+    }
 }

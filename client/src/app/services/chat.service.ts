@@ -1,92 +1,105 @@
-import { Injectable } from '@angular/core';
-import { io, Socket } from 'socket.io-client';
-import { Observable } from 'rxjs';
-import { Message } from '../shared/models/message.model';
-import { User } from '../shared/models/user.model';
-import { Room } from '../shared/models/room.model';
-import { environment } from '../../environments/environment';
+import { Injectable } from "@angular/core";
+import { io, Socket } from "socket.io-client";
+import { Observable } from "rxjs";
+import { Message } from "../shared/models/message.model";
+import { User } from "../shared/models/user.model";
+import { Room } from "../shared/models/room.model";
+import { environment } from "../../environments/environment";
 
 @Injectable({
-  providedIn: 'root',
+    providedIn: "root",
 })
 export class ChatService {
-  private socket: Socket;
-  private readonly url: string = environment.baseUrl + '/chat';
+    private socket: Socket;
+    private readonly url: string = environment.baseUrl + "/chat";
 
-  constructor() {
-    this.socket = io(this.url);
-  }
+    constructor() {
+        this.socket = io(this.url);
+    }
 
-  createRoom(user?: User, room?: Room): Promise<any> {
-    return new Promise((resolve, reject) => {
-      this.socket.emit('create', { user, room });
+    createRoom(user?: User, room?: Room): Promise<any> {
+        return new Promise((resolve, reject) => {
+            this.socket.emit("create", { user_id: user?.id, ...room });
 
-      this.socket.once('success', (response) => {
-        resolve(response);
-      });
-      this.socket.once('error', (response) => {
-        reject(response);
-      });
-    });
-  }
+            this.socket.once("success", (response) => {
+                resolve(response);
+            });
+            this.socket.once("error", (response) => {
+                reject(response);
+            });
+        });
+    }
 
-  joinChat(user?: User, room?: Room): Promise<any> {
-    return new Promise((resolve, reject) => {
-      this.socket.emit('join', { user, room });
+    joinRoom(user?: User, room?: Room): Promise<any> {
+        return new Promise((resolve, reject) => {
+            this.socket.emit("join", { user_id: user?.id, ...room });
 
-      this.socket.once('success', (response) => {
-        resolve(response);
-      });
-      this.socket.once('error', (response) => {
-        reject(response);
-      });
-    });
-  }
+            this.socket.once("success", (response) => {
+                resolve(response);
+            });
+            this.socket.once("error", (response) => {
+                reject(response);
+            });
+        });
+    }
 
-  leaveChat(user?: User, room?: Room): void {
-    this.socket.emit('leave', { user, room });
-    this.clear();
-  }
+    subscribeRoom(user?: User, room?: Room): Promise<any> {
+        return new Promise((resolve, reject) => {
+            this.socket.emit("subscribe", { user_id: user?.id, room_id: room?.id });
 
-  // Emit "message" event
-  sendMessage(message: Message, room?: Room): void {
-    this.socket.emit('message', { message, room });
-  }
+            this.socket.once("success", (response) => {
+                resolve(response);
+            });
+            this.socket.once("error", (response) => {
+                reject(response);
+            });
+        });
+    }
 
-  // Listen for "message" events
-  onMessage(): Observable<Message> {
-    return new Observable((observer) => {
-      this.socket.on('message', (data: Message) => observer.next(data));
-    });
-  }
+    leaveChat(user?: User, room?: Room): void {
+        this.socket.emit("leave", { user_id: user?.id, room_id: room?.id });
+        this.clear();
+    }
 
-  // Listen for "join" events
-  onJoin(): Observable<string> {
-    return new Observable((observer) => {
-      this.socket.on('join', (message: string) => observer.next(message));
-    });
-  }
+    // Emit "message" event
+    sendMessage(message: Message): void {
+        this.socket.emit("message", { user_id: message.user?.id, room_id: message.room?.id, parts: message.parts });
+    }
 
-  onLeave(): Observable<string> {
-    return new Observable((observer) => {
-      this.socket.on('leave', (message: string) => observer.next(message));
-    });
-  }
+    // Listen for "message" events
+    onMessage(): Observable<Message> {
+        return new Observable((observer) => {
+            this.socket.on("message", (data: Message) => observer.next(data));
+        });
+    }
 
-  onSuccess(): Observable<any> {
-    return new Observable((observer) => {
-      this.socket.on('success', (data) => observer.next(data));
-    });
-  }
+    // Listen for "join" events
+    onJoin(): Observable<string> {
+        return new Observable((observer) => {
+            this.socket.on("join", (message: string) => observer.next(message));
+        });
+    }
 
-  // Listen for "error" events
-  onError(): Observable<{ message: string, errors: {} }> {
-    return new Observable((observer) => {
-      this.socket.on('error', (error) => observer.next(error));
-    });
-  }
+    onLeave(): Observable<string> {
+        return new Observable((observer) => {
+            this.socket.on("leave", (message: string) => observer.next(message));
+        });
+    }
 
-  clear(): void {
-    this.socket.removeAllListeners()
-  }
+    onSuccess(): Observable<any> {
+        return new Observable((observer) => {
+            this.socket.on("success", (data) => observer.next(data));
+        });
+    }
+
+    // Listen for "error" events
+    onError(): Observable<{ message: string; errors: {} }> {
+        return new Observable((observer) => {
+            this.socket.on("error", (error) => observer.next(error));
+        });
+    }
+
+    clear(): void {
+        this.socket.removeAllListeners();
+    }
 }

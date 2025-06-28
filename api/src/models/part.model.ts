@@ -11,6 +11,8 @@ import {
 import { Message } from './message.model';
 import { PartTypeEnums } from '../enums/part-type.enums';
 import { Media } from './media.model';
+import { Inject } from '@nestjs/common';
+import { MessagesService } from '../modules/messages/messages.service';
 
 @Entity({ name: 'parts' })
 export class Part extends BaseEntity {
@@ -23,6 +25,8 @@ export class Part extends BaseEntity {
   @Column('text')
   content: string;
 
+  formatted_content: any;
+
   @ManyToOne(() => Message)
   @JoinColumn({ name: 'message_id' })
   message: Message;
@@ -32,11 +36,13 @@ export class Part extends BaseEntity {
   @UpdateDateColumn()
   updated_at: Date;
 
-  async getContent(): Promise<string | Media | Message | null> {
+  async getContent(
+    messageService: MessagesService,
+  ): Promise<string | Media | Message | null> {
     if (this.type === PartTypeEnums.MEDIA) {
       return await Media.findOneBy({ id: Number(this.content) });
     } else if (this.type === PartTypeEnums.MESSAGE) {
-      return await Message.findOneBy({ id: Number(this.content) });
+      return await messageService.findOne(Number(this.content));
     } else {
       return this.content;
     }

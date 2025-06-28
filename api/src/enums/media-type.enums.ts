@@ -5,4 +5,6 @@ export enum MediaTypeEnums {
   PDF = 'pdf',
   FILE = 'file',
   AUDIO = 'audio',
+  RAW = 'raw',
+  AUTO = 'auto',
 }

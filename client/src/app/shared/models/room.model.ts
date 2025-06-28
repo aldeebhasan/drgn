@@ -1,4 +1,10 @@
 export class Room {
-  constructor(public name: string, public password: string = '') {
-  }
+    id: number;
+    name: string;
+    code: string;
+    password: string = "";
+
+    constructor(data: Partial<Room>) {
+        Object.assign(this, data);
+    }
 }

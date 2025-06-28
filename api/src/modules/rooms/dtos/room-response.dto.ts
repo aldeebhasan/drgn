@@ -9,5 +9,8 @@ export class RoomResponseDto {
   name: string;
 
   @Expose()
+  code: string;
+
+  @Expose()
   created_at: Date;
 }

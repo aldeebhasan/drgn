@@ -16,12 +16,18 @@ export class RoomsService {
     return Room.findOneBy({ code: name });
   }
 
-  async create(user_id: number, name: string, password: string = '') {
+  async create(
+    user_id: number,
+    name: string,
+    code: string,
+    password: string = '',
+  ) {
     const salt = await bcrypt.genSalt();
     const hashedPassword = password ? await bcrypt.hash(password, salt) : '';
     return Room.create({
       user: { id: user_id },
       name: name,
+      code: code,
       password: hashedPassword,
     }).save();
   }

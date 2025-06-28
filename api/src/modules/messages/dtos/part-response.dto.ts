@@ -1,6 +1,5 @@
 import { Exclude, Expose, plainToInstance, Transform } from 'class-transformer';
 import { PartTypeEnums } from '../../../enums/part-type.enums';
-import { Part } from '../../../models/part.model';
 import { Message } from '../../../models/message.model';
 import { MessageResponseDto } from './message-response.dto';
 import { Media } from '../../../models/media.model';
@@ -14,16 +13,14 @@ export class PartResponseDto {
   @Expose()
   type: PartTypeEnums;
 
-  @Expose()
-  @Transform(({ obj }) => {
-    const part = obj as Part;
-    const content = part.getContent();
-    if (content instanceof Message) {
-      return plainToInstance(MessageResponseDto, content);
-    } else if (content instanceof Media) {
-      return plainToInstance(MediaResponseDto, content);
+  @Expose({ name: 'formatted_content' })
+  @Transform(({ value }): any => {
+    if (value instanceof Message) {
+      return plainToInstance(MessageResponseDto, value);
+    } else if (value instanceof Media) {
+      return plainToInstance(MediaResponseDto, value);
     } else {
-      return content;
+      return value;
     }
   })
   content: any;

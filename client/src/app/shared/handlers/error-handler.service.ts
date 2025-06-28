@@ -7,27 +7,25 @@ import { environment } from "../../../environments/environment";
 
 @Injectable()
 export class GlobalErrorHandler implements ErrorHandler {
-  constructor(private injector: Injector) {}
+    constructor(private injector: Injector) {}
 
-  handleError(error: any): void {
-    const router = this.injector.get(Router);
-    const toastrService = this.injector.get(ToastrService);
+    handleError(error: any): void {
+        const router = this.injector.get(Router);
+        const toastrService = this.injector.get(ToastrService);
 
-    if (!environment.production) {
-      console.error("Error:", error);
+        if (!environment.production) {
+            console.error("Error:", error);
+        }
+        if (error instanceof HttpErrorResponse) {
+            const responseDto = error.error as ResponseDto<void>;
+            if (error.status === 422) {
+                toastrService.error(Object.values(responseDto.errors).join(", "), responseDto.message);
+            } else {
+                toastrService.error(responseDto.message);
+            }
+        } else {
+            console.log(error);
+            // toastrService.error("Something went wrong; please try again later.");
+        }
     }
-    if (error instanceof HttpErrorResponse) {
-      const responseDto = error.error as ResponseDto<void>;
-      if (error.status === 422) {
-        toastrService.error(
-          Object.values(responseDto.errors).join(", "),
-          responseDto.message
-        );
-      } else {
-        toastrService.error(responseDto.message);
-      }
-    } else {
-      toastrService.error("Something went wrong; please try again later.");
-    }
-  }
 }

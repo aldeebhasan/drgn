@@ -1,32 +1,33 @@
-<div class="flex w-full justify-center" *ngIf="message.type === 'system';else messageTemplate">
-  <div class="flex  sm:w-8/12 w-full items-center justify-center  rounded-xl p-1 relative">
-    <span class="bg-gray-200 w-full h-0.5  absolute -z-10"></span>
-    <div class=" bg-gray-200 rounded-2xl px-6 py-1 shadow-xl text-sm" *ngFor="let part of message.parts">
-      <app-message-part [part] = "part"/>
+<div class="flex w-full justify-center" *ngIf="message.type === 'system'; else messageTemplate">
+    <div class="flex sm:w-8/12 w-full items-center justify-center rounded-xl p-1 relative">
+        <span class="bg-gray-200 w-full h-0.5 absolute -z-10"></span>
+        <div class="bg-gray-200 rounded-2xl px-6 py-1 shadow-xl text-sm" *ngFor="let part of message.parts">
+            <app-message-part [part]="part" />
+        </div>
     </div>
-  </div>
 </div>
 
 <ng-template #messageTemplate>
-  <div class="flex sm:max-w-7/12 max-w-10/12 sm:min-w-4/12 min-w-6/12" [ngClass]="{'flex-row-reverse':isLocal()}">
-    <div class="w-9 h-9 rounded-full flex items-center justify-center mx-2">
-      <div class=" size-8 rounded-full flex items-center justify-center border-y-2" [ngClass]="{'text-white' : isLocal()}" [ngStyle]="{'background-color': !isLocal() ? '#FFF' : message.sender?.color}">
-        {{symbol(message.sender?.name)}}
-      </div>
-    </div>
-    <div class="flex flex-col items-end w-full">
-      <div class="flex flex-col w-full shadow-xl rounded-lg p-2 gap-1" [ngClass]="{'text-white' : isLocal()}" [ngStyle]="{'background-color': !isLocal() ? '#FFF' : message.sender?.color}">
-        <div class="flex justify-between text-sm">
-          <p class=" font-bold"> {{message.sender?.name}}</p>
+    <div class="flex sm:max-w-7/12 max-w-10/12 sm:min-w-4/12 min-w-6/12" [ngClass]="{ 'flex-row-reverse': isLocal() }">
+        <div class="w-9 h-9 rounded-full flex items-center justify-center mx-2">
+            <div
+                class="size-8 rounded-full flex items-center justify-center border-y-2 text-white"
+                [ngStyle]="{ 'background-color': isLocal() ? '#00a63e' : message.user?.color }"
+            >
+                {{ symbol(message.user?.name) }}
+            </div>
         </div>
-        <app-message-part 
-        *ngFor="let part of message.parts"
-        [part] = "part"
-        [local] = "isLocal()"
-        />
-      </div>
-      <p class="text-xs"> {{message.createdAt}}</p>
-
+        <div class="flex flex-col items-end w-full">
+            <div
+                class="flex flex-col w-full shadow-xl rounded-lg p-2 gap-1 text-white"
+                [ngStyle]="{ 'background-color': isLocal() ? '#00a63e' : message.user?.color }"
+            >
+                <div class="flex justify-between text-sm">
+                    <p class="font-bold">{{ message.user?.name }}</p>
+                </div>
+                <app-message-part *ngFor="let part of message.parts" [part]="part" [local]="isLocal()" />
+            </div>
+            <p class="text-xs">{{ message.createdAt }}</p>
+        </div>
     </div>
-  </div>
 </ng-template>

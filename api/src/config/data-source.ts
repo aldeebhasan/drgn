@@ -16,7 +16,7 @@ export default new DataSource({
   entities: [__dirname + '/../**/*.model{.ts,.js}'],
   synchronize: true,
   migrationsRun: false,
-  logging: true,
+  logging: process.env.APP_ENV === 'local',
   migrations: [__dirname + '/../migrations/*.ts'],
   dropSchema: false,
 });

@@ -8,13 +8,17 @@ import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class UploaderService {
+  private env: string = 'local';
+
   constructor(config: ConfigService) {
     cloudinary.config({
       cloud_name: config.get('CLOUDINARY_CLOUD_NAME'),
       api_key: config.get('CLOUDINARY_API_KEY'),
       api_secret: config.get('CLOUDINARY_API_SECRET'),
     });
+    this.env = config.get('APP_ENV', 'local');
   }
+
   async uploadFile(
     file: Express.Multer.File,
   ): Promise<UploadApiErrorResponse | UploadApiResponse | undefined> {
@@ -23,7 +27,8 @@ export class UploaderService {
         .upload_stream(
           {
             resource_type: 'auto',
-            folder: 'chat',
+            folder: this.env,
+            use_filename: true,
             overwrite: true,
           },
           (error, result) => {
