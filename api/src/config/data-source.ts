@@ -14,7 +14,7 @@ export default new DataSource({
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
   entities: [__dirname + '/../**/*.model{.ts,.js}'],
-  synchronize: true,
+  synchronize: process.env.APP_ENV === 'local',
   migrationsRun: false,
   logging: process.env.APP_ENV === 'local',
   migrations: [__dirname + '/../migrations/*.ts'],
