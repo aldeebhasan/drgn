@@ -68,27 +68,32 @@
                         <app-icon class="fill-gray-600" name="loader" />
                     </div>
                 </div>
-                <input
-                    #inputMessage
-                    [(ngModel)]="newMessage"
-                    (keyup.enter)="sendMessage()"
-                    placeholder="Type a message..."
-                    autofocus
-                    class="p-2 rounded-md border border-gray-400 focus:outline-none focus:border-gray-500"
-                />
+                <div class="relative">
+                    <div class="absolute end-0 top-1 cursor-pointer">
+                        <app-emoji-picker (emojiSelected)="addEmoji($event)"></app-emoji-picker>
+                    </div>
+                    <input
+                        #inputMessage
+                        [(ngModel)]="newMessage"
+                        (keyup.enter)="sendMessage()"
+                        placeholder="Type a message..."
+                        autofocus
+                        class="p-2 rounded-md border border-gray-400 focus:outline-none focus:border-gray-500 w-full"
+                    />
+                </div>
             </div>
-            <div class="bg-black focus:bg-gray-700 hover:bg-gray-800 text-white px-2 py-0.5 rounded-md cursor-pointer">
-                <app-emoji-picker (emojiSelected)="addEmoji($event)"></app-emoji-picker>
-            </div>
+
             <label
                 for="uploadFile1"
-                class="flex bg-black focus:bg-gray-700 hover:bg-gray-800 text-white text-base py-2 px-4 outline-none rounded-md cursor-pointer font-[sans-serif]"
+                class="flex bg-black/40 focus:bg-gray-700 hover:bg-gray-800 text-white text-base py-2 px-3 outline-none rounded cursor-pointer"
             >
                 <app-icon name="upload" class="w-6 fill-white inline" />
                 <input (change)="addMedia($event)" accept="image/*,video/*" type="file" id="uploadFile1" class="hidden" />
             </label>
 
-            <button class="bg-black focus:bg-gray-700 hover:bg-gray-800 text-white px-4 py-2 rounded-md cursor-pointer" (click)="sendMessage()">Send</button>
+            <button class="bg-black/40 focus:bg-gray-700 hover:bg-gray-800 text-white px-3 py-2 rounded cursor-pointer" (click)="sendMessage()">
+                <app-icon name="send" class="w-6 fill-white inline" />
+            </button>
         </div>
     </footer>
 </div>

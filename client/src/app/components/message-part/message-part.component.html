@@ -8,7 +8,7 @@
     >
         <app-icon name="upload" class="scale-x-[-1]" />
     </a>
-    <span class="text-xs absolute bottom-0 text-gray-700 px-1">{{ (part.content | castToMedia)?.name }}</span>
+    <span class="text-xs absolute bottom-0 text-gray-700 px-1 truncate">{{ (part.content | castToMedia)?.name }}</span>
 </div>
 <p *ngIf="part.type === 'text'">{{ part.content }}</p>
 <a
