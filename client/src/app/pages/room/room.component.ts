@@ -31,6 +31,7 @@ export class RoomComponent {
             name: ["", [Validators.required, Validators.minLength(3)]],
             code: ["", [Validators.required, Validators.minLength(10), Validators.maxLength(10)]],
             password: [""],
+            is_public: [true],
         });
 
         this.joinForm = this.fb.group({

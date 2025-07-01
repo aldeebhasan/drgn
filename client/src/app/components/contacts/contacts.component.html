@@ -1,29 +1,52 @@
-<!-- Sidebar -->
-<div class="bg-gray-50 border-r border-gray-300 flex flex-col h-screen">
-  <!-- Sidebar Header -->
-  <header
-    class=" border-b border-gray-300 flex justify-start items-center text-white"
-  >
-  <img src="/assets/logo@full.png" alt="Drgn" class="h-16" />
-  </header>
+<div class="bg-white border-r border-gray-200 flex flex-col justify-between h-screen">
+    <!-- Room Area -->
+    <div>
+        <!-- Room Header -->
+        <div class="p-4 border-b border-gray-200">
+            <h2 class="font-bold text-gray-800">Current</h2>
+        </div>
 
-  <!-- Contact List -->
-  <div class="overflow-y-auto h-full p-3 mb-9 pb-20">
-    <div
-      *ngFor="let chat of chats"
-      class="flex items-center mb-4 cursor-pointer hover:bg-gray-100 p-2 rounded-md">
-      <div class="w-12 h-12 bg-gray-300 rounded-full mr-3">
-        <img src="https://placehold.co/200x/e7c2ff/7315d1.svg?text=ʕ•́ᴥ•̀ʔ&font=Lato" alt="User Avatar" class="w-12 h-12 rounded-full">
-      </div>
-      <div class="flex-1">
-        <h3 class=" font-semibold">{{chat.name}}</h3>
-        <p class="text-sm text-gray-600">Check the last message</p>
-      </div>
+        <div class="p-2 bg-green-50 border-l-4 border-green-500">
+            <div class="flex items-center">
+                <div class="w-10 h-10 rounded-lg bg-green-100 flex items-center justify-center mr-3">
+                    <app-icon name="chat" class="text-green-400" />
+                </div>
+                <div>
+                    <h3 class="font-medium text-gray-900">{{ room?.name }}</h3>
+                    <p class="text-sm text-gray-500 truncate"># {{ room?.code }}</p>
+                </div>
+            </div>
+        </div>
     </div>
+    <div class="flex-1 overflow-y-auto">
+        <!-- Your Room List -->
+        <div class="p-4 border-b border-gray-200" *ngIf="userRooms.length > 0">
+            <h2 class="font-bold text-gray-800">Your's</h2>
+        </div>
 
-  </div>
+        <app-room-item [room]="item" (click)="selectRoom(item)" *ngFor="let item of userRooms" />
 
-  <div class="px-8 py-4 border-b border-gray-300 flex justify-between items-center ">
-    <button type="submit" (click)="logout()" class="w-full bg-red-500 focus:bg-red-700 hover:bg-red-600 text-white px-6 py-2 font-xl rounded-xl sm:mb-0 cursor-pointer">Logout ({{user?.name}})</button>
-  </div>
+        <!-- Public Room List -->
+        <div class="p-4 border-b border-gray-200" *ngIf="publicRooms.length > 0">
+            <h2 class="font-bold text-gray-800">Public</h2>
+        </div>
+
+        <app-room-item [room]="item" (click)="selectRoom(item)" *ngFor="let item of publicRooms" />
+    </div>
+    <!-- Current User Profile -->
+    <div class="p-3.5 border-t border-gray-200 flex items-center">
+        <div class="w-10 h-10 rounded-lg flex items-center justify-center mr-3 text-white" [ngStyle]="{ 'background-color': user?.color }">
+            {{ user?.name | toSymbol }}
+        </div>
+        <div>
+            <h3 class="font-medium text-gray-900">You</h3>
+            <p class="text-sm text-gray-500">Online</p>
+        </div>
+        <button
+            (click)="logout()"
+            class="text-red-500 focus:text-red-900 hover:bg-red-100 border-1 border-red-500 px-4 py-1 text-sm rounded sm:mb-0 cursor-pointer ml-auto"
+        >
+            Logout
+        </button>
+    </div>
 </div>

@@ -1,4 +1,4 @@
-<div *ngIf="part.type === 'media'" (click)="openModal($event, part.content)" class="flex flex-col">
+<div *ngIf="part.type === 'media'" (click)="openModal($event, part.content)" class="flex flex-col relative">
     <img *ngIf="(part.content | castToMedia)?.type === 'image'" [src]="(part.content | castToMedia)?.path" class="w-30 bg-gray-100 rounded" [alt]="part.id" />
     <a
         *ngIf="(part.content | castToMedia)?.type !== 'image'"
@@ -8,6 +8,7 @@
     >
         <app-icon name="upload" class="scale-x-[-1]" />
     </a>
+    <span class="text-xs absolute bottom-0 text-gray-700 px-1">{{ (part.content | castToMedia)?.name }}</span>
 </div>
 <p *ngIf="part.type === 'text'">{{ part.content }}</p>
 <a

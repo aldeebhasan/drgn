@@ -1,19 +1,22 @@
-import { Component } from "@angular/core";
+import { Component, HostListener } from "@angular/core";
 import { ChatComponent } from "../../components/chat/chat.component";
 import { ContactsComponent } from "../../components/contacts/contacts.component";
 import { ChatService } from "../../services/chat.service";
 import { Message } from "../../shared/models/message.model";
 import { User } from "../../shared/models/user.model";
 import { ToastrService } from "ngx-toastr";
+import { CommonModule } from "@angular/common";
 
 @Component({
     selector: "app-home",
-    imports: [ChatComponent, ContactsComponent],
+    imports: [ChatComponent, ContactsComponent, CommonModule],
     templateUrl: "./home.component.html",
 })
 export class HomeComponent {
     messages: Array<Message> = [];
     audio?: HTMLAudioElement;
+    isMobile = false;
+    isOpen = false;
 
     constructor(private chatService: ChatService, private toastrService: ToastrService) {
         this.audio = new Audio();
@@ -42,6 +45,10 @@ export class HomeComponent {
 
     ngOnDestroy(): void {
         this.chatService.clear();
+    }
+
+    toggleMenu() {
+        this.isOpen = !this.isOpen;
     }
 
     generateSystemMsg(message: string): Message {

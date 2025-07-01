@@ -5,6 +5,7 @@ import { Message } from "../shared/models/message.model";
 import { User } from "../shared/models/user.model";
 import { Room } from "../shared/models/room.model";
 import { environment } from "../../environments/environment";
+import { ResponseDto } from "../shared/dtos/response.dto";
 
 @Injectable({
     providedIn: "root",
@@ -15,6 +16,19 @@ export class ChatService {
 
     constructor() {
         this.socket = io(this.url);
+    }
+
+    listRooms(user?: User, room?: Room, extra: object = {}): Promise<ResponseDto<Room[]>> {
+        return new Promise((resolve, reject) => {
+            this.socket.emit("rooms", { user_id: user?.id, room_id: room?.id, ...extra });
+
+            this.socket.once("success", (response) => {
+                resolve(response);
+            });
+            this.socket.once("error", (response) => {
+                reject(response);
+            });
+        });
     }
 
     createRoom(user?: User, room?: Room): Promise<any> {

@@ -17,7 +17,7 @@ export class Room extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => User)
+  @ManyToOne(() => User, (relation) => relation.rooms, { eager: true })
   @JoinColumn({ name: 'user_id' })
   user: User;
 
@@ -29,6 +29,9 @@ export class Room extends BaseEntity {
 
   @Column({ nullable: true })
   password: string;
+
+  @Column({ type: 'bool', default: true })
+  is_public: boolean;
 
   @CreateDateColumn()
   created_at: Date;

@@ -14,6 +14,7 @@ import { IconComponent } from "../icon/icon.component";
 import { Media } from "../../shared/models/media.model";
 import { ResponseDto } from "../../shared/dtos/response.dto";
 import { EmojiPickerComponent } from "../emoji-picker/emoji-picker.component";
+import { ToastrService } from "ngx-toastr";
 
 @Component({
     selector: "app-chat",
@@ -33,7 +34,16 @@ export class ChatComponent implements OnInit {
     replyToMessage?: Message = undefined;
     datepipe: DatePipe = new DatePipe("en-US");
 
-    constructor(private authService: AuthService, private chatService: ChatService, private apiService: ApiService, private router: Router) {}
+    isMobile = false;
+    isOpen = false;
+
+    constructor(
+        private authService: AuthService,
+        private chatService: ChatService,
+        private apiService: ApiService,
+        private toastrService: ToastrService,
+        private router: Router
+    ) {}
 
     async ngOnInit() {
         this.sender = this.authService.user();
@@ -43,9 +53,7 @@ export class ChatComponent implements OnInit {
 
     // Send a text message
     sendMessage() {
-        console.log("1");
         if (this.newMessage.trim() || this.media.length > 0) {
-            console.log("2");
             let type: "link" | "text" = this.newMessage.startsWith("http") ? "link" : "text";
 
             const parts: Part[] = [];
@@ -120,5 +128,10 @@ export class ChatComponent implements OnInit {
         this.authService.logout();
         this.chatService.leaveChat(this.sender, this.room);
         this.router.navigateByUrl("register");
+    }
+
+    copyToClipboard(text: string) {
+        navigator.clipboard.writeText(text);
+        this.toastrService.success("Code is coppied");
     }
 }

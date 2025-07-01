@@ -9,7 +9,7 @@ import {
 import { Server, Socket } from 'socket.io';
 import { ChatActionDto } from './dtos/chat-action.dto';
 import { SendMessageDto } from './dtos/send-message.dto';
-import { UseFilters, UsePipes } from '@nestjs/common';
+import { Query, UseFilters, UsePipes } from '@nestjs/common';
 import { WsExceptionsFilter } from './filters/ws-exceptions.filter';
 import { ResponseDto } from '../../core/dtos/response.dto';
 import { validationPipe } from '../../core/pipes/validation.pipe';
@@ -36,6 +36,17 @@ export class ChatGateway {
     private messageService: MessagesService,
   ) {}
 
+  @SubscribeMessage('rooms')
+  async listRooms(
+    @MessageBody() data: object,
+    @ConnectedSocket() client: Socket,
+  ) {
+    const rooms = await this.roomService.findAll(data);
+
+    const roomsRes = plainToInstance(RoomResponseDto, rooms);
+    client.emit('success', ResponseDto.success(roomsRes));
+  }
+
   @SubscribeMessage('create')
   async createRoom(
     @MessageBody() data: RoomCreateDto,
@@ -52,6 +63,7 @@ export class ChatGateway {
       data.name,
       data.code,
       data.password || '',
+      data.is_public,
     );
     const roomRes = plainToInstance(RoomResponseDto, room);
     client.emit('success', ResponseDto.success(roomRes));

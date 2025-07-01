@@ -20,7 +20,7 @@ export class Media extends BaseEntity {
   @Column()
   type: MediaTypeEnums;
 
-  @Column()
+  @Column({ default: '' })
   name: string = '';
 
   @Column()

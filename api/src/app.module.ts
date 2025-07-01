@@ -24,6 +24,6 @@ import { MessagesModule } from './modules/messages/messages.module';
     RoomsModule,
     MessagesModule,
   ],
-  providers: [...databaseProviders, MessagesService],
+  providers: [...databaseProviders],
 })
 export class AppModule {}

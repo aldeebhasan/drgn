@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsNumber, IsString, Length } from 'class-validator';
+import { IsBoolean, IsNotEmpty, IsNumber, IsString, Length } from 'class-validator';
 
 export class RoomCreateDto {
   @IsNumber()
@@ -16,4 +16,7 @@ export class RoomCreateDto {
 
   @IsString()
   password: string;
+
+  @IsBoolean()
+  is_public: boolean;
 }

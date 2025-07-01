@@ -5,7 +5,6 @@ import { Part } from '../../models/part.model';
 
 @Injectable()
 export class MessagesService {
-
   async create(message: SendMessageDto) {
     const messageObj = await Message.create({
       user: { id: message.user_id },

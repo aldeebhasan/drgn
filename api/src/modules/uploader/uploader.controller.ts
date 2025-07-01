@@ -13,6 +13,7 @@ import { Media } from '../../models/media.model';
 import { MediaTypeEnums } from '../../enums/media-type.enums';
 import { plainToInstance } from 'class-transformer';
 import { MediaResponseDto } from '../messages/dtos/media-response.dto';
+import { join } from 'path';
 
 @Controller('uploader')
 export class UploaderController {
@@ -29,6 +30,7 @@ export class UploaderController {
       .uploadFile(file)
       .then(async (response: UploadApiResponse) => {
         const media = await Media.create({
+          name: file.originalname,
           user: { id: user_id },
           room: { id: room_id },
           path: response?.secure_url ?? response.url ?? '',

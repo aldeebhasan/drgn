@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Room } from '../../models/room.model';
 import * as bcrypt from 'bcrypt';
+import { Not } from 'typeorm';
 
 @Injectable()
 export class RoomsService {
@@ -16,11 +17,25 @@ export class RoomsService {
     return Room.findOneBy({ code: name });
   }
 
+  findAll(filters: { user_id?: number; room_id?: number }) {
+    return Room.createQueryBuilder('rooms')
+      .where((qb) =>
+        qb.where({ user: { id: filters.user_id } }).orWhere((qb2) => {
+          qb2.where({ user: Not({ id: filters.user_id }), is_public: true });
+        }),
+      )
+      .where({ id: Not(filters.room_id) })
+      .innerJoinAndSelect('rooms.user', 'user')
+      .limit(50)
+      .getMany();
+  }
+
   async create(
     user_id: number,
     name: string,
     code: string,
     password: string = '',
+    is_public: boolean = true,
   ) {
     const salt = await bcrypt.genSalt();
     const hashedPassword = password ? await bcrypt.hash(password, salt) : '';
@@ -29,6 +44,7 @@ export class RoomsService {
       name: name,
       code: code,
       password: hashedPassword,
+      is_public: is_public,
     }).save();
   }
 

@@ -14,7 +14,7 @@
                 class="size-8 rounded-full flex items-center justify-center border-y-2 text-white"
                 [ngStyle]="{ 'background-color': isLocal() ? '#00a63e' : message.user?.color }"
             >
-                {{ symbol(message.user?.name) }}
+                {{ message.user?.name | toSymbol }}
             </div>
         </div>
         <div class="flex flex-col items-end w-full">

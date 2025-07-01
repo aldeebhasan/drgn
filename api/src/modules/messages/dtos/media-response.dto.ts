@@ -7,6 +7,9 @@ export class MediaResponseDto {
   id: number;
 
   @Expose()
+  name: string;
+
+  @Expose()
   type: MediaTypeEnums;
 
   @Expose()

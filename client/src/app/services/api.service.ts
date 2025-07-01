@@ -15,7 +15,7 @@ export class ApiService {
 
     async uploadImage(file: any, user?: User, room?: Room): Promise<any> {
         const formData = new FormData();
-        formData.append("file", file, "filename.png");
+        formData.append("file", file, file.name);
         formData.append("user_id", `${user?.id}`);
         formData.append("room_id", `${room?.id}`);
 

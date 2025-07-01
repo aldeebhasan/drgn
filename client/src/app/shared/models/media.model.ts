@@ -1,5 +1,6 @@
 export class Media {
-  id?: string;
-  type?: 'image' | 'video' | 'file'| 'audio';
-  path?: string;
+    id?: number;
+    name: string;
+    type?: "image" | "video" | "file" | "audio";
+    path?: string;
 }
