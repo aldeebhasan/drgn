@@ -1,8 +1,23 @@
 <div class="flex h-screen w-screen overflow-hidden">
-  <div class="w-1/4 not-sm:hidden ">
-    <app-contacts></app-contacts>
-  </div>
-  <div class="flex-1 relative bg">
-    <app-chat [messages]='messages'></app-chat>
-  </div>
+    <div
+        class="fixed md:relative inset-y-0 left-0 md:w-1/4 z-40 bg-gray-800 text-white transform transition-transform duration-300 ease-in-out"
+        [ngClass]="{
+            '-translate-x-full md:translate-x-0': !isOpen,
+            'w-full': isOpen,
+        }"
+    >
+        <app-contacts></app-contacts>
+    </div>
+    <div class="flex-1 relative bg w-full">
+        <button
+            (click)="toggleMenu()"
+            class="md:hidden fixed top-4 z-40 text-black size-8 text-xl cursor-pointer pb-2"
+            [ngClass]="isOpen ? 'right-4' : 'left-4'"
+            aria-label="Toggle"
+        >
+            {{ isOpen ? "✕" : "☰" }}
+        </button>
+
+        <app-chat [messages]="messages"></app-chat>
+    </div>
 </div>
