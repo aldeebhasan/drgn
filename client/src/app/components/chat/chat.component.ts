@@ -124,12 +124,6 @@ export class ChatComponent implements OnInit {
         return message.user?.id === this.authService.user()?.id;
     }
 
-    logout() {
-        this.authService.logout();
-        this.chatService.leaveChat(this.sender, this.room);
-        this.router.navigateByUrl("register");
-    }
-
     copyToClipboard(text: string) {
         navigator.clipboard.writeText(text);
         this.toastrService.success("Code is coppied");

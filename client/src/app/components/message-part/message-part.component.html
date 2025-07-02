@@ -1,19 +1,17 @@
 <div *ngIf="part.type === 'media'" (click)="openModal($event, part.content)" class="flex flex-col relative">
-    <img *ngIf="(part.content | castToMedia)?.type === 'image'" [src]="(part.content | castToMedia)?.path" class="w-30 bg-gray-100 rounded" [alt]="part.id" />
-    <a
-        *ngIf="(part.content | castToMedia)?.type !== 'image'"
-        target="_blank"
-        [href]="(part.content | castToMedia)?.path"
-        class="w-30 bg-gray-100 rounded rotate-180"
-    >
-        <app-icon name="upload" class="scale-x-[-1]" />
-    </a>
-    <span class="text-xs absolute bottom-0 text-gray-700 px-1 truncate">{{ (part.content | castToMedia)?.name }}</span>
+    <img
+        [src]="(part.content | castToMedia)?.type === 'image' ? (part.content | castToMedia)?.path : 'assets/file.png'"
+        class="w-50 bg-gray-100 rounded"
+        [alt]="part.id"
+    />
+
+    <span class="text-xs absolute bottom-0 text-gray-700 px-1 truncate max-w-50">{{ (part.content | castToMedia)?.name }}</span>
 </div>
 <p *ngIf="part.type === 'text'">{{ part.content }}</p>
 <a
     *ngIf="part.type === 'link'"
     target="_blank"
+    class="truncate"
     [ngClass]="local ? 'text-green-700 hover:text-green-500' : 'text-gray-200 hover:text-gray-50'"
     [href]="part.content"
     >{{ part.content }}</a
