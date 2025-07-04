@@ -1,5 +1,22 @@
-<div class="min-h-screen flex flex-col justify-center items-center">
-    <img src="/assets/logo@full.png" alt="Drgn" class="h-30" />
+<div class="min-h-screen flex flex-col justify-center items-center p-2">
+    <img src="/assets/logo@full.png" alt="Drgn" class="h-20 sm:h-30" />
+
+    <div class="absolute top-0 w-full flex p-2 justify-between">
+        <a href="/chat" class="flex items-center space-x-1 group cursor-pointer" title="Logout">
+            <div class="p-2 rounded-full group-hover:bg-green-100 transition-colors text-gray-400 group-hover:text-green-600">
+                <app-icon name="chat" />
+            </div>
+
+            <span class="text-gray-500 group-hover:text-green-600 transition-colors text-sm font-medium"> Back to room </span>
+        </a>
+        <button (click)="logout()" class="flex items-center space-x-1 group cursor-pointer" title="Logout">
+            <span class="text-gray-500 group-hover:text-red-600 transition-colors text-sm font-medium"> Sign Out </span>
+            <div class="p-2 rounded-full group-hover:bg-red-100 transition-colors text-gray-400 group-hover:text-red-600">
+                <app-icon name="logout" />
+            </div>
+        </button>
+    </div>
+
     <!-- Main card -->
     <div
         class="relative w-full max-w-md bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-200 transition-all duration-500 hover:shadow-lg z-10"
@@ -86,12 +103,7 @@
                 </div>
 
                 <div class="pt-4">
-                    <button
-                        type="submit"
-                        class="w-full py-3 px-6 bg-green-600 hover:bg-green-700 rounded-lg text-white font-medium shadow hover:shadow-md transition-all duration-300 transform hover:-translate-y-0.5 cursor-pointer"
-                    >
-                        Create Room
-                    </button>
+                    <app-submit-button title="Create" [loading]="loading" hint="Creating room..." />
                 </div>
             </form>
 
@@ -126,12 +138,7 @@
                 </div>
 
                 <div class="pt-4">
-                    <button
-                        type="submit"
-                        class="w-full py-3 px-6 bg-green-600 hover:bg-green-700 rounded-lg text-white font-medium shadow hover:shadow-md transition-all duration-300 transform hover:-translate-y-0.5 cursor-pointer"
-                    >
-                        Join Room
-                    </button>
+                    <app-submit-button title="Join" [loading]="loading" hint="Joining room..." />
                 </div>
             </form>
         </div>

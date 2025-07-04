@@ -4,11 +4,10 @@ import { CommonModule } from "@angular/common";
 import { CastToMediaPipe } from "../../pipes/cast-to-media.pipe";
 import { CastToMessagePipe } from "../../pipes/cast-to-message.pipe";
 import { MediaService } from "../../services/media.service";
-import { IconComponent } from "../icon/icon.component";
 
 @Component({
     selector: "app-message-part",
-    imports: [CommonModule, CastToMediaPipe, CastToMessagePipe, IconComponent],
+    imports: [CommonModule, CastToMediaPipe, CastToMessagePipe],
     templateUrl: "./message-part.component.html",
 })
 export class MessagePartComponent {

@@ -7,10 +7,11 @@ import { Room } from "../../shared/models/room.model";
 import { CommonModule } from "@angular/common";
 import { ToastrService } from "ngx-toastr";
 import { IconComponent } from "../../components/icon/icon.component";
+import { SubmitButtonComponent } from "../../components/submit-button/submit-button.component";
 
 @Component({
     selector: "app-room",
-    imports: [CommonModule, ReactiveFormsModule, IconComponent],
+    imports: [CommonModule, ReactiveFormsModule, IconComponent, SubmitButtonComponent],
     templateUrl: "./room.component.html",
     styleUrl: "./room.component.css",
 })
@@ -19,6 +20,7 @@ export class RoomComponent {
     joinForm: FormGroup;
     activeTab: "create" | "join" = "join";
     createdRoom?: Room;
+    loading = false;
 
     constructor(
         private fb: FormBuilder,
@@ -45,6 +47,7 @@ export class RoomComponent {
             this.joinForm.markAllAsTouched();
             return;
         }
+        this.loading = true;
 
         const room: Room = this.joinForm.value;
 
@@ -55,7 +58,8 @@ export class RoomComponent {
             })
             .catch((err) => {
                 this.toastrService.error(Object.values(err.errors).join(", "), err.message);
-            });
+            })
+            .finally(() => (this.loading = false));
     }
 
     createRoom() {
@@ -73,7 +77,8 @@ export class RoomComponent {
             })
             .catch((err) => {
                 this.toastrService.error(Object.values(err.errors).join(", "), err.message);
-            });
+            })
+            .finally(() => (this.loading = false));
     }
 
     afterJoinOrCreate(room: Room) {
@@ -95,5 +100,10 @@ export class RoomComponent {
         }
         const codeControl = this.createForm.get("code");
         codeControl?.setValue(result);
+    }
+
+    logout() {
+        this.authService.logout();
+        this.router.navigateByUrl("register");
     }
 }

@@ -42,11 +42,11 @@
             <h3 class="font-medium text-gray-900">You</h3>
             <p class="text-sm text-gray-500">Online</p>
         </div>
-        <button
-            (click)="logout()"
-            class="text-red-500 focus:text-red-900 hover:bg-red-100 border-1 border-red-500 px-4 py-1 text-sm rounded sm:mb-0 cursor-pointer ml-auto"
-        >
-            Logout
+
+        <button (click)="logout()" class="ml-auto flex items-center space-x-1 cursor-pointer" title="Logout">
+            <div class="p-2 rounded-full bg-red-50 hover:bg-red-100 transition-colors text-red-400 hover:text-red-600">
+                <app-icon name="logout" />
+            </div>
         </button>
     </div>
 </div>

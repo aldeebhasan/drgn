@@ -6,6 +6,7 @@ import { Router } from "@angular/router";
 import { CookieService } from "ngx-cookie-service";
 import { AuthService } from "../../services/auth.service";
 import { ResponseDto } from "../../shared/dtos/response.dto";
+import { SubmitButtonComponent } from "../../components/submit-button/submit-button.component";
 
 interface AuthResponse {
     token: string;
@@ -14,13 +15,14 @@ interface AuthResponse {
 
 @Component({
     selector: "app-register",
-    imports: [CommonModule, ReactiveFormsModule],
+    imports: [CommonModule, ReactiveFormsModule, SubmitButtonComponent],
     templateUrl: "./register.component.html",
     providers: [CookieService],
 })
 export class RegisterComponent {
     form: FormGroup;
     activeTab: "guest" | "register" | "login" = "guest";
+    loading = false;
 
     constructor(private formBuilder: FormBuilder, private router: Router, private authService: AuthService) {
         this.form = this.formBuilder.group({
@@ -31,7 +33,7 @@ export class RegisterComponent {
     }
 
     ngOnInit(): void {
-        if (this.authService.user()) {
+        if (this.authService.isLogin()) {
             this.router.navigateByUrl("room");
         }
     }
@@ -70,6 +72,7 @@ export class RegisterComponent {
             this.form.markAllAsTouched();
             return;
         }
+        this.loading = true;
 
         const user: User = new User({
             name: this.form.value["name"] ?? "",
@@ -78,20 +81,29 @@ export class RegisterComponent {
         });
 
         if (this.activeTab === "guest") {
-            this.authService.registerAsGuest(user).then((res: ResponseDto<AuthResponse>) => {
-                this.authService.setAuth(res.data?.user as User, res.data?.token as string);
-                this.router.navigateByUrl("room");
-            });
+            this.authService
+                .registerAsGuest(user)
+                .then((res: ResponseDto<AuthResponse>) => {
+                    this.authService.setAuth(res.data?.user as User, res.data?.token as string);
+                    this.router.navigateByUrl("room");
+                })
+                .finally(() => (this.loading = false));
         } else if (this.activeTab === "register") {
-            this.authService.register(user).then((res: ResponseDto<AuthResponse>) => {
-                this.authService.setAuth(res.data?.user as User, res.data?.token as string);
-                this.router.navigateByUrl("room");
-            });
+            this.authService
+                .register(user)
+                .then((res: ResponseDto<AuthResponse>) => {
+                    this.authService.setAuth(res.data?.user as User, res.data?.token as string);
+                    this.router.navigateByUrl("room");
+                })
+                .finally(() => (this.loading = false));
         } else {
-            this.authService.login(user.email, user.password).then((res: ResponseDto<AuthResponse>) => {
-                this.authService.setAuth(res.data?.user as User, res.data?.token as string);
-                this.router.navigateByUrl("room");
-            });
+            this.authService
+                .login(user.email, user.password)
+                .then((res: ResponseDto<AuthResponse>) => {
+                    this.authService.setAuth(res.data?.user as User, res.data?.token as string);
+                    this.router.navigateByUrl("room");
+                })
+                .finally(() => (this.loading = false));
         }
     }
 }

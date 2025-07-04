@@ -1,5 +1,5 @@
-<div class="min-h-screen flex flex-col justify-center items-center">
-    <img src="/assets/logo@full.png" alt="Drgn" class="h-30" />
+<div class="min-h-screen flex flex-col justify-center items-center p-2">
+    <img src="/assets/logo@full.png" alt="Drgn" class="h-20 sm:h-30" />
     <div
         class="relative w-full max-w-md bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-200 transition-all duration-500 hover:shadow-lg z-10"
     >
@@ -78,9 +78,7 @@
                     </div>
 
                     <div class="text-center pt-4">
-                        <button type="submit" class="w-full bg-green-600 focus:bg-green-700 text-white px-6 py-3 font-xl rounded-xl sm:mb-0 cursor-pointer">
-                            {{ activeTab === "login" ? "Login" : "Register" }}
-                        </button>
+                        <app-submit-button [title]="activeTab === 'login' ? 'Login' : 'Register'" [loading]="loading" />
                     </div>
                 </form>
             </div>
