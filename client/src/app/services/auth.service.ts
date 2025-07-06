@@ -4,6 +4,7 @@ import { User } from "../shared/models/user.model";
 import { Room } from "../shared/models/room.model";
 import { ApiService } from "./api.service";
 import { ToastrService } from "ngx-toastr";
+import { ResponseDto } from "../shared/dtos/response.dto";
 
 @Injectable({
     providedIn: "root",
@@ -25,14 +26,22 @@ export class AuthService {
         return this.apiServie.register(user);
     }
     async registerAsGuest(user: User) {
-        return this.apiServie.registerAsGuest(user);
+        return this.apiServie.registerAsGuest(user).catch((error) => {
+            const responseDto = error.error as ResponseDto<void>;
+            this.toastrService.error(Object.values(responseDto.errors).join(", "), responseDto.message);
+        });
     }
 
     async login(email: string, password: string) {
-        return this.apiServie.login({
-            username: email,
-            password: password,
-        });
+        return this.apiServie
+            .login({
+                username: email,
+                password: password,
+            })
+            .catch((error) => {
+                const responseDto = error.error as ResponseDto<void>;
+                this.toastrService.error(Object.values(responseDto.errors).join(", "), responseDto.message);
+            });
     }
 
     setAuth(user: User, token: string) {
@@ -56,7 +65,7 @@ export class AuthService {
     }
 
     setRoom(room: Room) {
-        this.cookieService.set(this.ROOM_KEY, JSON.stringify(room));
+        this.cookieService.set(this.ROOM_KEY, JSON.stringify(room), undefined, "/");
     }
 
     room(): Room | undefined {

@@ -15,7 +15,6 @@ import { CommonModule } from "@angular/common";
 export class HomeComponent {
     messages: Array<Message> = [];
     audio?: HTMLAudioElement;
-    isMobile = false;
     isOpen = false;
 
     constructor(private chatService: ChatService, private toastrService: ToastrService) {

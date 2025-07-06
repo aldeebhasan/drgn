@@ -14,7 +14,7 @@ export class GlobalErrorHandler implements ErrorHandler {
         const toastrService = this.injector.get(ToastrService);
 
         if (!environment.production) {
-            console.error("Error:", error);
+            console.error(environment.production + " Error:", error);
         }
         if (error instanceof HttpErrorResponse) {
             const responseDto = error.error as ResponseDto<void>;
@@ -24,8 +24,7 @@ export class GlobalErrorHandler implements ErrorHandler {
                 toastrService.error(responseDto.message);
             }
         } else {
-            console.log(error);
-            // toastrService.error("Something went wrong; please try again later.");
+            toastrService.error("Something went wrong; please refresh the page.");
         }
     }
 }

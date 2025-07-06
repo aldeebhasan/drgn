@@ -21,6 +21,7 @@ export class RoomComponent {
     activeTab: "create" | "join" = "join";
     createdRoom?: Room;
     loading = false;
+    currentRoom?: Room = undefined;
 
     constructor(
         private fb: FormBuilder,
@@ -40,6 +41,9 @@ export class RoomComponent {
             code: ["", [Validators.required]],
             password: [""],
         });
+
+        console.log(this.authService.hasRoom());
+        this.currentRoom = authService.room();
     }
 
     joinRoom() {

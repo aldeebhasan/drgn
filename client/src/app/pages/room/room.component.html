@@ -1,13 +1,12 @@
 <div class="min-h-screen flex flex-col justify-center items-center p-2">
     <img src="/assets/logo@full.png" alt="Drgn" class="h-20 sm:h-30" />
 
-    <div class="absolute top-0 w-full flex p-2 justify-between">
-        <a href="/chat" class="flex items-center space-x-1 group cursor-pointer" title="Logout">
+    <div class="absolute top-0 w-full flex flex-col p-2 items-end justify-start">
+        <a *ngIf="currentRoom != undefined" href="/chat" class="flex items-center space-x-1 group cursor-pointer" title="Back to room">
+            <span class="text-gray-500 group-hover:text-green-600 transition-colors text-sm font-medium"> Back to room </span>
             <div class="p-2 rounded-full group-hover:bg-green-100 transition-colors text-gray-400 group-hover:text-green-600">
                 <app-icon name="chat" />
             </div>
-
-            <span class="text-gray-500 group-hover:text-green-600 transition-colors text-sm font-medium"> Back to room </span>
         </a>
         <button (click)="logout()" class="flex items-center space-x-1 group cursor-pointer" title="Logout">
             <span class="text-gray-500 group-hover:text-red-600 transition-colors text-sm font-medium"> Sign Out </span>
