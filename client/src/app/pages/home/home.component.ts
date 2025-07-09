@@ -53,7 +53,7 @@ export class HomeComponent {
     generateSystemMsg(message: string): Message {
         return {
             user: { id: 0, name: "System" } as User,
-            createdAt: new Date().toLocaleString(),
+            created_at: new Date().toLocaleString(),
             type: "system",
             parts: [
                 {

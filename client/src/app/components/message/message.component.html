@@ -11,7 +11,7 @@
     <div class="flex sm:max-w-7/12 max-w-10/12 sm:min-w-4/12 min-w-6/12" [ngClass]="{ 'flex-row-reverse': isLocal() }">
         <div class="w-9 h-9 rounded-full flex items-center justify-center mx-2">
             <div
-                class="size-8 rounded-full flex items-center justify-center border-y-2 text-white"
+                class="size-8 rounded-full flex items-center justify-center text-white"
                 [ngStyle]="{ 'background-color': isLocal() ? '#00a63e' : message.user?.color }"
             >
                 {{ message.user?.name | toSymbol }}
@@ -27,7 +27,7 @@
                 </div>
                 <app-message-part *ngFor="let part of message.parts" [part]="part" [local]="isLocal()" />
             </div>
-            <p class="text-xs">{{ message.createdAt }}</p>
+            <p class="text-xs">{{ message.created_at | messageDate }}</p>
         </div>
     </div>
 </ng-template>

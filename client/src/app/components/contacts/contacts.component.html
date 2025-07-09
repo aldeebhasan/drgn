@@ -6,17 +6,7 @@
             <h2 class="font-bold text-gray-800">Current</h2>
         </div>
 
-        <div class="p-2 bg-green-50 border-l-4 border-green-500">
-            <div class="flex items-center">
-                <div class="w-10 h-10 rounded-lg bg-green-100 flex items-center justify-center mr-3">
-                    <app-icon name="chat" class="text-green-400" />
-                </div>
-                <div>
-                    <h3 class="font-medium text-gray-900">{{ room?.name }}</h3>
-                    <p class="text-sm text-gray-500 truncate"># {{ room?.code }}</p>
-                </div>
-            </div>
-        </div>
+        <app-room-item [room]="room" [current]="true" />
     </div>
     <div class="flex-1 overflow-y-auto">
         <!-- Your Room List -->

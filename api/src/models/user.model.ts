@@ -22,10 +22,10 @@ export class User extends BaseEntity {
   email: string;
 
   @Column({ nullable: true })
-  mobile?: string;
+  mobile?: string = '';
 
   @Column({ nullable: true })
-  password?: string;
+  password?: string = '';
 
   @Column({ default: '' })
   image: string = '';

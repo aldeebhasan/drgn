@@ -60,6 +60,12 @@ export class AuthService {
 
         return user ? user : undefined;
     }
+
+    token(): string {
+        let token = this.cookieService.get(this.TOKEN_KEY);
+        return token ?? "";
+    }
+
     isLogin(): boolean {
         return !!this.user();
     }

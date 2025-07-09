@@ -4,10 +4,11 @@ import { CommonModule } from "@angular/common";
 import { AuthService } from "../../services/auth.service";
 import { MessagePartComponent } from "../message-part/message-part.component";
 import { ToSymbolPipe } from "../../pipes/to-symbol.pipe";
+import { MessageDatePipe } from "../../pipes/message-date.pipe";
 
 @Component({
     selector: "app-message",
-    imports: [CommonModule, MessagePartComponent, ToSymbolPipe],
+    imports: [CommonModule, MessagePartComponent, ToSymbolPipe, MessageDatePipe],
     templateUrl: "./message.component.html",
 })
 export class MessageComponent {

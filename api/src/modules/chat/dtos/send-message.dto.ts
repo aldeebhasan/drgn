@@ -14,10 +14,6 @@ export class PartDto {
 export class SendMessageDto {
   @IsNumber()
   @IsNotEmpty()
-  user_id: number;
-
-  @IsNumber()
-  @IsNotEmpty()
   room_id: number;
 
   @ValidateNested({ each: true })

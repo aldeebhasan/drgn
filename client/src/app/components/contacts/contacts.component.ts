@@ -21,30 +21,29 @@ export class ContactsComponent implements OnInit {
     publicRooms: Room[] = [];
     userRooms: Room[] = [];
     user?: User;
-    room?: Room;
+    room: Room;
 
     constructor(private authService: AuthService, private chatService: ChatService, private router: Router) {
         this.user = this.authService.user();
-        this.room = this.authService.room();
+        this.room = this.authService.room() as Room;
     }
 
     async ngOnInit() {
-        const rooms = (await this.chatService.listRooms(this.user, this.room)) || {};
+        const rooms = (await this.chatService.listRooms(this.room)) || {};
         rooms.data?.forEach((room) => {});
         this.userRooms = (rooms.data ?? []).filter((item) => item.user.id === this.user?.id);
         this.publicRooms = (rooms.data ?? []).filter((item) => item.user.id !== this.user?.id && item.is_public);
-        console.log(this.userRooms);
     }
 
     selectRoom(room: Room) {
-        this.chatService.leaveChat(this.user, this.room);
+        this.chatService.leaveChat(this.room);
         this.authService.setRoom(room);
         window.location.reload();
     }
 
     logout() {
         this.authService.logout();
-        this.chatService.leaveChat(this.user, this.room);
+        this.chatService.leaveChat(this.room);
         this.router.navigateByUrl("register");
     }
 }

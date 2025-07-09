@@ -7,6 +7,7 @@ export class Room {
     user: User;
     password: string = "";
     is_public: boolean = false;
+    has_password: boolean = false;
 
     constructor(data: Partial<Room>) {
         Object.assign(this, data);

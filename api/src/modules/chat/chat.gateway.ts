@@ -9,7 +9,7 @@ import {
 import { Server, Socket } from 'socket.io';
 import { ChatActionDto } from './dtos/chat-action.dto';
 import { SendMessageDto } from './dtos/send-message.dto';
-import { Query, UseFilters, UsePipes } from '@nestjs/common';
+import { UseFilters, UseGuards, UsePipes } from '@nestjs/common';
 import { WsExceptionsFilter } from './filters/ws-exceptions.filter';
 import { ResponseDto } from '../../core/dtos/response.dto';
 import { validationPipe } from '../../core/pipes/validation.pipe';
@@ -22,10 +22,14 @@ import { plainToInstance } from 'class-transformer';
 import { RoomResponseDto } from '../rooms/dtos/room-response.dto';
 import { MessagesService } from '../messages/messages.service';
 import { MessageResponseDto } from '../messages/dtos/message-response.dto';
+import { WsAuthGuard } from '../users/guards/ws-auth.guard';
+import { WsAuth } from '../users/decoraters/ws-auth.decorator';
+import { UserPayload } from '../users/types/user-payload.type';
 
 @WebSocketGateway({ namespace: '/chat', cors: { origin: '*' } })
 @UsePipes(validationPipe)
 @UseFilters(new WsExceptionsFilter())
+@UseGuards(WsAuthGuard)
 export class ChatGateway {
   @WebSocketServer() server: Server; // Access to the WebSocket server instance
 
@@ -40,10 +44,12 @@ export class ChatGateway {
   async listRooms(
     @MessageBody() data: object,
     @ConnectedSocket() client: Socket,
+    @WsAuth() auth: UserPayload,
   ) {
-    const rooms = await this.roomService.findAll(data);
+    const rooms = await this.roomService.findAll({ user_id: auth.id, ...data });
 
     const roomsRes = plainToInstance(RoomResponseDto, rooms);
+
     client.emit('success', ResponseDto.success(roomsRes));
   }
 
@@ -51,6 +57,7 @@ export class ChatGateway {
   async createRoom(
     @MessageBody() data: RoomCreateDto,
     @ConnectedSocket() client: Socket,
+    @WsAuth() auth: UserPayload,
   ) {
     let room = await this.roomService.findOneByCode(data.code);
     if (room) {
@@ -59,7 +66,7 @@ export class ChatGateway {
       );
     }
     room = await this.roomService.create(
-      data.user_id,
+      auth.id,
       data.name,
       data.code,
       data.password || '',
@@ -89,9 +96,10 @@ export class ChatGateway {
   async handleSubscribe(
     @MessageBody() data: ChatActionDto,
     @ConnectedSocket() client: Socket,
+    @WsAuth() auth: UserPayload,
   ) {
     const room = await this.roomService.findOneOrFail(data.room_id);
-    const user = await this.userService.findOneOrFail(data.user_id);
+    const user = await this.userService.findOneOrFail(auth.id);
     this.chatService.joinRoom(this.server, client, user, room);
 
     const roomRes = plainToInstance(RoomResponseDto, room);
@@ -102,15 +110,19 @@ export class ChatGateway {
   async handleLeave(
     @MessageBody() data: ChatActionDto,
     @ConnectedSocket() client: Socket,
+    @WsAuth() auth: UserPayload,
   ) {
-    const user = await this.userService.findOneOrFail(data.user_id);
+    const user = await this.userService.findOneOrFail(auth.id);
     const room = await this.roomService.findOneOrFail(data.room_id);
     this.chatService.leaveRoom(this.server, client, user, room);
   }
 
   @SubscribeMessage('message')
-  async handleMessage(@MessageBody() data: SendMessageDto) {
-    const message = await this.messageService.create(data);
+  async handleMessage(
+    @MessageBody() data: SendMessageDto,
+    @WsAuth() auth: UserPayload,
+  ) {
+    const message = await this.messageService.create(data, auth);
 
     const msgRes = plainToInstance(MessageResponseDto, message);
 

@@ -3,15 +3,12 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { CacheModule } from '@nestjs/cache-manager';
 import { UploaderModule } from './modules/uploader/uploader.module';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigModule } from '@nestjs/config';
 import { ChatModule } from './modules/chat/chat.module';
 import { databaseProviders } from './providers/database.provider';
 import { UsersModule } from './modules/users/users.module';
 import { RoomsModule } from './modules/rooms/rooms.module';
 import { MessagesModule } from './modules/messages/messages.module';
-import { PassportModule } from '@nestjs/passport';
-import { JwtModule } from '@nestjs/jwt';
-import { JwtStrategy } from './modules/users/jwt.strategy';
 
 @Module({
   imports: [
@@ -25,16 +22,7 @@ import { JwtStrategy } from './modules/users/jwt.strategy';
     UsersModule,
     RoomsModule,
     MessagesModule,
-    PassportModule,
-    JwtModule.registerAsync({
-      imports: [ConfigModule],
-      useFactory: (configService: ConfigService) => ({
-        secret: configService.get<string>('JWT_SECRET'),
-        signOptions: { expiresIn: configService.get<string>('JWT_EXPIRY') },
-      }),
-      inject: [ConfigService],
-    }),
   ],
-  providers: [...databaseProviders, JwtStrategy],
+  providers: [...databaseProviders],
 })
 export class AppModule {}

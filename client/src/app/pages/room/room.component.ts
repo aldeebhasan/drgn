@@ -42,7 +42,6 @@ export class RoomComponent {
             password: [""],
         });
 
-        console.log(this.authService.hasRoom());
         this.currentRoom = authService.room();
     }
 
@@ -56,7 +55,7 @@ export class RoomComponent {
         const room: Room = this.joinForm.value;
 
         this.chatService
-            .joinRoom(this.authService.user(), room)
+            .joinRoom(room)
             .then((response) => {
                 this.afterJoinOrCreate(response.data);
             })
@@ -75,7 +74,7 @@ export class RoomComponent {
         const room: Room = this.createForm.value;
 
         this.chatService
-            .createRoom(this.authService.user(), room)
+            .createRoom(room)
             .then((response) => {
                 this.createdRoom = response.data;
             })

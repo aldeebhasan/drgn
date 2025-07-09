@@ -6,6 +6,7 @@ import { User } from "../shared/models/user.model";
 import { Room } from "../shared/models/room.model";
 import { environment } from "../../environments/environment";
 import { ResponseDto } from "../shared/dtos/response.dto";
+import { AuthService } from "./auth.service";
 
 @Injectable({
     providedIn: "root",
@@ -14,13 +15,14 @@ export class ChatService {
     private socket: Socket;
     private readonly url: string = environment.baseUrl + "/chat";
 
-    constructor() {
-        this.socket = io(this.url);
+    constructor(private authService: AuthService) {
+        const token = authService.token();
+        this.socket = io(this.url, { auth: { token: token } });
     }
 
-    listRooms(user?: User, room?: Room, extra: object = {}): Promise<ResponseDto<Room[]>> {
+    listRooms(room?: Room, extra: object = {}): Promise<ResponseDto<Room[]>> {
         return new Promise((resolve, reject) => {
-            this.socket.emit("rooms", { user_id: user?.id, room_id: room?.id, ...extra });
+            this.socket.emit("rooms", { room_id: room?.id, ...extra });
 
             this.socket.once("success", (response) => {
                 resolve(response);
@@ -31,9 +33,9 @@ export class ChatService {
         });
     }
 
-    createRoom(user?: User, room?: Room): Promise<any> {
+    createRoom(room?: Room): Promise<any> {
         return new Promise((resolve, reject) => {
-            this.socket.emit("create", { user_id: user?.id, ...room });
+            this.socket.emit("create", room);
 
             this.socket.once("success", (response) => {
                 resolve(response);
@@ -44,9 +46,9 @@ export class ChatService {
         });
     }
 
-    joinRoom(user?: User, room?: Room): Promise<any> {
+    joinRoom(room?: Room): Promise<any> {
         return new Promise((resolve, reject) => {
-            this.socket.emit("join", { user_id: user?.id, ...room });
+            this.socket.emit("join", room);
 
             this.socket.once("success", (response) => {
                 resolve(response);
@@ -57,9 +59,9 @@ export class ChatService {
         });
     }
 
-    subscribeRoom(user?: User, room?: Room): Promise<any> {
+    subscribeRoom(room?: Room): Promise<any> {
         return new Promise((resolve, reject) => {
-            this.socket.emit("subscribe", { user_id: user?.id, room_id: room?.id });
+            this.socket.emit("subscribe", { room_id: room?.id });
 
             this.socket.once("success", (response) => {
                 resolve(response);
@@ -70,14 +72,14 @@ export class ChatService {
         });
     }
 
-    leaveChat(user?: User, room?: Room): void {
-        this.socket.emit("leave", { user_id: user?.id, room_id: room?.id });
+    leaveChat(room?: Room): void {
+        this.socket.emit("leave", { room_id: room?.id });
         this.clear();
     }
 
     // Emit "message" event
     sendMessage(message: Message): void {
-        this.socket.emit("message", { user_id: message.user?.id, room_id: message.room?.id, parts: message.parts });
+        this.socket.emit("message", { room_id: message.room?.id, parts: message.parts });
     }
 
     // Listen for "message" events

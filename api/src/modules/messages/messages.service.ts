@@ -2,12 +2,13 @@ import { Injectable } from '@nestjs/common';
 import { SendMessageDto } from '../chat/dtos/send-message.dto';
 import { Message } from '../../models/message.model';
 import { Part } from '../../models/part.model';
+import { UserPayload } from '../users/types/user-payload.type';
 
 @Injectable()
 export class MessagesService {
-  async create(message: SendMessageDto) {
+  async create(message: SendMessageDto, auth: UserPayload) {
     const messageObj = await Message.create({
-      user: { id: message.user_id },
+      user: { id: auth.id },
       room: { id: message.room_id },
     }).save();
 

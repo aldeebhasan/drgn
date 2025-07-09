@@ -6,7 +6,7 @@ export class Message {
     id?: string;
     user?: User;
     room?: Room;
-    createdAt?: string;
+    created_at?: string;
     parts: Array<Part> = [];
     type?: string = "user";
 

@@ -2,9 +2,12 @@ import { Injectable } from '@nestjs/common';
 import { User } from '../../models/user.model';
 import { UserCreateDto } from './dtos/user-create.dto';
 import * as bcrypt from 'bcrypt';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class UsersService {
+  constructor(private jwtService: JwtService) {}
+
   findOne(id: number) {
     return User.findOneBy({ id: id });
   }
@@ -41,6 +44,7 @@ export class UsersService {
   }
 
   getToken(user: User) {
-    return user.id + '-23471987498312794791387498023';
+    const payload = { sub: user.id, username: user.email, name: user.name };
+    return this.jwtService.sign(payload);
   }
 }

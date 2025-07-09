@@ -24,5 +24,11 @@ export class RoomResponseDto {
   user: User;
 
   @Expose()
+  @Transform(({ obj }: { obj: Room }): any => {
+    return obj.password && obj.password.trim().length > 0;
+  })
+  has_password: boolean;
+
+  @Expose()
   created_at: Date;
 }

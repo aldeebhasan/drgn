@@ -48,7 +48,7 @@ export class ChatComponent implements OnInit {
     async ngOnInit() {
         this.sender = this.authService.user();
         this.room = this.authService.room();
-        await this.chatService.subscribeRoom(this.sender, this.room);
+        await this.chatService.subscribeRoom(this.room);
     }
 
     // Send a text message
