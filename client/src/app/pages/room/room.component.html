@@ -1,19 +1,19 @@
 <div class="min-h-screen flex flex-col justify-center items-center p-2">
     <img src="/assets/logo@full.png" alt="Drgn" class="h-20 sm:h-30" />
 
-    <div class="absolute top-0 w-full flex flex-col p-2 items-end justify-start">
+    <div class="absolute top-0 w-full flex p-2 items-center justify-between">
+        <button (click)="logout()" class="flex items-center space-x-1 group cursor-pointer" title="Logout">
+            <div class="p-2 rounded-full group-hover:bg-red-100 transition-colors text-gray-400 group-hover:text-red-600">
+                <app-icon name="logout" />
+            </div>  
+            <span class="text-gray-500 group-hover:text-red-600 transition-colors text-sm font-medium"> Sign Out </span>
+        </button>
         <a *ngIf="currentRoom != undefined" href="/chat" class="flex items-center space-x-1 group cursor-pointer" title="Back to room">
-            <span class="text-gray-500 group-hover:text-green-600 transition-colors text-sm font-medium"> Back to room </span>
+            <span class="text-gray-500 group-hover:text-green-600 transition-colors text-sm font-medium"> Back To Room </span>
             <div class="p-2 rounded-full group-hover:bg-green-100 transition-colors text-gray-400 group-hover:text-green-600">
                 <app-icon name="chat" />
             </div>
         </a>
-        <button (click)="logout()" class="flex items-center space-x-1 group cursor-pointer" title="Logout">
-            <span class="text-gray-500 group-hover:text-red-600 transition-colors text-sm font-medium"> Sign Out </span>
-            <div class="p-2 rounded-full group-hover:bg-red-100 transition-colors text-gray-400 group-hover:text-red-600">
-                <app-icon name="logout" />
-            </div>
-        </button>
     </div>
 
     <!-- Main card -->
@@ -147,10 +147,10 @@
             <div class="text-center">
                 <p class="text-gray-600 mb-2">Share this code with others:</p>
                 <div class="bg-white px-6 py-4 rounded-lg inline-block border border-gray-200 shadow-sm">
-                    <p class="text-2xl font-bold text-gray-800 tracking-widest">{{ createdRoom.code }}</p>
+                    <p class="text-2xl font-bold text-gray-800 tracking-widest">{{ createdRoom.room.code }}</p>
                 </div>
                 <button
-                    (click)="copyToClipboard(createdRoom.code)"
+                    (click)="copyToClipboard(createdRoom.room.code)"
                     class="mt-4 text-sm text-green-600 hover:text-green-800 flex items-center justify-center mx-auto cursor-pointer"
                 >
                     Copy to clipboard

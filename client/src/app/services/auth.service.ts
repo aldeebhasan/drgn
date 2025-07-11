@@ -12,6 +12,7 @@ import { ResponseDto } from "../shared/dtos/response.dto";
 export class AuthService {
     cookieService = inject(CookieService);
     ROOM_KEY = "ROOM";
+    ROOM_PASSCODE_KEY = "ROOM_PASSCODE";
     TOKEN_KEY = "TOKEN";
     USER_KEY = "USER";
 
@@ -70,8 +71,9 @@ export class AuthService {
         return !!this.user();
     }
 
-    setRoom(room: Room) {
+    setRoom(room: Room, passcode: string) {
         this.cookieService.set(this.ROOM_KEY, JSON.stringify(room), undefined, "/");
+        this.cookieService.set(this.ROOM_PASSCODE_KEY, passcode, undefined, "/");
     }
 
     room(): Room | undefined {
@@ -79,6 +81,11 @@ export class AuthService {
         let room = roomData ? new Room(JSON.parse(roomData)) : undefined;
 
         return room ? room : undefined;
+    }
+
+    roomPasscode(): string {
+        let token = this.cookieService.get(this.ROOM_PASSCODE_KEY);
+        return token ?? "";
     }
 
     hasRoom(): boolean {

@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Room } from '../../models/room.model';
 import * as bcrypt from 'bcrypt';
 import { Not } from 'typeorm';
+import { User } from '../../models/user.model';
 
 @Injectable()
 export class RoomsService {
@@ -50,5 +51,20 @@ export class RoomsService {
 
   async checkPassword(room: Room, password: string) {
     return room.password ? await bcrypt.compare(password, room.password) : true;
+  }
+
+  async checkToken(token: string, room: Room | number, user: User | number) {
+    const userId = user instanceof User ? user.id : user;
+    const roomId = room instanceof Room ? room.id : room;
+
+    return await bcrypt.compare(`${roomId}_${userId}`, token);
+  }
+
+  async getToken(room: Room | number, user: User | number): Promise<string> {
+    const salt = await bcrypt.genSalt();
+    const userId = user instanceof User ? user.id : user;
+    const roomId = room instanceof Room ? room.id : room;
+
+    return await bcrypt.hash(`${roomId}_${userId}`, salt);
   }
 }

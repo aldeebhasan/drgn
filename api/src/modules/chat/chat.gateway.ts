@@ -25,6 +25,7 @@ import { MessageResponseDto } from '../messages/dtos/message-response.dto';
 import { WsAuthGuard } from '../users/guards/ws-auth.guard';
 import { WsAuth } from '../users/decoraters/ws-auth.decorator';
 import { UserPayload } from '../users/types/user-payload.type';
+import { RoomSubscribeDto } from './dtos/room-subscribe.dto';
 
 @WebSocketGateway({ namespace: '/chat', cors: { origin: '*' } })
 @UsePipes(validationPipe)
@@ -72,14 +73,18 @@ export class ChatGateway {
       data.password || '',
       data.is_public,
     );
-    const roomRes = plainToInstance(RoomResponseDto, room);
-    client.emit('success', ResponseDto.success(roomRes));
+    const response = {
+      room: plainToInstance(RoomResponseDto, room),
+      passcode: await this.roomService.getToken(room, auth.id),
+    };
+    client.emit('success', ResponseDto.success(response));
   }
 
   @SubscribeMessage('join')
   async handleJoin(
     @MessageBody() data: RoomJoinDto,
     @ConnectedSocket() client: Socket,
+    @WsAuth() auth: UserPayload,
   ) {
     const room = await this.roomService.findOneByCode(data.code);
     if (!room || !(await this.roomService.checkPassword(room, data.password))) {
@@ -88,18 +93,26 @@ export class ChatGateway {
       );
     }
 
-    const roomRes = plainToInstance(RoomResponseDto, room);
-    client.emit('success', ResponseDto.success(roomRes));
+    const response = {
+      room: plainToInstance(RoomResponseDto, room),
+      passcode: await this.roomService.getToken(room, auth.id),
+    };
+    client.emit('success', ResponseDto.success(response));
   }
 
   @SubscribeMessage('subscribe')
   async handleSubscribe(
-    @MessageBody() data: ChatActionDto,
+    @MessageBody() data: RoomSubscribeDto,
     @ConnectedSocket() client: Socket,
     @WsAuth() auth: UserPayload,
   ) {
     const room = await this.roomService.findOneOrFail(data.room_id);
     const user = await this.userService.findOneOrFail(auth.id);
+
+    if (!(await this.roomService.checkToken(data.passcode, room, user))) {
+      throw new WsException('Failed to subscribe the room!');
+    }
+
     this.chatService.joinRoom(this.server, client, user, room);
 
     const roomRes = plainToInstance(RoomResponseDto, room);

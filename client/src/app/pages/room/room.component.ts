@@ -19,7 +19,7 @@ export class RoomComponent {
     createForm: FormGroup;
     joinForm: FormGroup;
     activeTab: "create" | "join" = "join";
-    createdRoom?: Room;
+    createdRoom?: { room: Room; passcode: string };
     loading = false;
     currentRoom?: Room = undefined;
 
@@ -84,8 +84,10 @@ export class RoomComponent {
             .finally(() => (this.loading = false));
     }
 
-    afterJoinOrCreate(room: Room) {
-        this.authService.setRoom(room);
+    afterJoinOrCreate(data: { room: Room; passcode: string } | undefined) {
+        if (!data) return;
+
+        this.authService.setRoom(data.room, data.passcode);
         this.chatService.clear();
         this.router.navigateByUrl("chat");
     }

@@ -1,5 +1,4 @@
 import { Component, OnInit } from "@angular/core";
-import { Chat } from "../../shared/models/chat.model";
 import { CommonModule } from "@angular/common";
 import { CookieService } from "ngx-cookie-service";
 import { Router } from "@angular/router";
@@ -10,6 +9,7 @@ import { Room } from "../../shared/models/room.model";
 import { IconComponent } from "../core/icon/icon.component";
 import { ToSymbolPipe } from "../../pipes/to-symbol.pipe";
 import { RoomItemComponent } from "./room-item/room-item.component";
+import { ToastrService } from "ngx-toastr";
 
 @Component({
     selector: "app-contacts",
@@ -22,8 +22,9 @@ export class ContactsComponent implements OnInit {
     userRooms: Room[] = [];
     user?: User;
     room: Room;
+    loading: boolean = false;
 
-    constructor(private authService: AuthService, private chatService: ChatService, private router: Router) {
+    constructor(private authService: AuthService, private chatService: ChatService, private toastrService: ToastrService, private router: Router) {
         this.user = this.authService.user();
         this.room = this.authService.room() as Room;
     }
@@ -37,8 +38,23 @@ export class ContactsComponent implements OnInit {
 
     selectRoom(room: Room) {
         this.chatService.leaveChat(this.room);
-        this.authService.setRoom(room);
-        window.location.reload();
+        if (room.has_password) {
+            //show modal
+        } else {
+            room.password = "";
+            this.loading = true;
+            this.chatService
+                .joinRoom(room)
+                .then((response) => {
+                    this.authService.setRoom(response.data.room, response.data.passcode);
+                    this.chatService.clear();
+                    window.location.reload();
+                })
+                .catch((err) => {
+                    this.toastrService.error(Object.values(err.errors).join(", "), err.message);
+                })
+                .finally(() => (this.loading = false));
+        }
     }
 
     logout() {

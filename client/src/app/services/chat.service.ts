@@ -58,9 +58,9 @@ export class ChatService {
         });
     }
 
-    subscribeRoom(room?: Room): Promise<any> {
+    subscribeRoom(room: Room, passcode: string): Promise<any> {
         return new Promise((resolve, reject) => {
-            this.socket.emit("subscribe", { room_id: room?.id });
+            this.socket.emit("subscribe", { room_id: room?.id, passcode: passcode });
 
             this.socket.once("success", (response) => {
                 resolve(response);

@@ -8,7 +8,8 @@
 
         <app-room-item [room]="room" [current]="true" />
     </div>
-    <div class="flex-1 overflow-y-auto">
+    <div class="flex-1 overflow-y-auto relative">
+        <div class="bg-gray-300/30 cursor-not-allowed absolute top-0 left-0 w-full h-full" *ngIf="loading"></div>
         <!-- Your Room List -->
         <div class="p-4 border-b border-gray-200" *ngIf="userRooms.length > 0">
             <h2 class="font-bold text-gray-800">Your's</h2>
