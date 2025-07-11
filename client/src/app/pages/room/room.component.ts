@@ -6,8 +6,8 @@ import { ChatService } from "../../services/chat.service";
 import { Room } from "../../shared/models/room.model";
 import { CommonModule } from "@angular/common";
 import { ToastrService } from "ngx-toastr";
-import { IconComponent } from "../../components/icon/icon.component";
-import { SubmitButtonComponent } from "../../components/submit-button/submit-button.component";
+import { IconComponent } from "../../components/core/icon/icon.component";
+import { SubmitButtonComponent } from "../../components/core/submit-button/submit-button.component";
 
 @Component({
     selector: "app-room",

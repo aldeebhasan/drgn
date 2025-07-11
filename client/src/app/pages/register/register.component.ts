@@ -6,7 +6,7 @@ import { Router } from "@angular/router";
 import { CookieService } from "ngx-cookie-service";
 import { AuthService } from "../../services/auth.service";
 import { ResponseDto } from "../../shared/dtos/response.dto";
-import { SubmitButtonComponent } from "../../components/submit-button/submit-button.component";
+import { SubmitButtonComponent } from "../../components/core/submit-button/submit-button.component";
 
 interface AuthResponse {
     token: string;

@@ -1,10 +1,10 @@
 import { Component, Input } from "@angular/core";
-import { Message } from "../../shared/models/message.model";
 import { CommonModule } from "@angular/common";
-import { AuthService } from "../../services/auth.service";
 import { MessagePartComponent } from "../message-part/message-part.component";
-import { ToSymbolPipe } from "../../pipes/to-symbol.pipe";
-import { MessageDatePipe } from "../../pipes/message-date.pipe";
+import { MessageDatePipe } from "@app/pipes/message-date.pipe";
+import { Message } from "@app/shared/models/message.model";
+import { ToSymbolPipe } from "@app/pipes/to-symbol.pipe";
+import { AuthService } from "@app/services/auth.service";
 
 @Component({
     selector: "app-message",

@@ -7,9 +7,9 @@ import { AuthService } from "../../services/auth.service";
 import { User } from "../../shared/models/user.model";
 import { ChatService } from "../../services/chat.service";
 import { Room } from "../../shared/models/room.model";
-import { IconComponent } from "../icon/icon.component";
+import { IconComponent } from "../core/icon/icon.component";
 import { ToSymbolPipe } from "../../pipes/to-symbol.pipe";
-import { RoomItemComponent } from "../room-item/room-item.component";
+import { RoomItemComponent } from "./room-item/room-item.component";
 
 @Component({
     selector: "app-contacts",

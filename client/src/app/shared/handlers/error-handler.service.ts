@@ -3,7 +3,7 @@ import { HttpErrorResponse } from "@angular/common/http";
 import { Router } from "@angular/router";
 import { ToastrService } from "ngx-toastr";
 import { ResponseDto } from "../dtos/response.dto";
-import { environment } from "../../../environments/environment";
+import { environment } from "@environments/environment";
 
 @Injectable()
 export class GlobalErrorHandler implements ErrorHandler {

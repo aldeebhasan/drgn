@@ -2,11 +2,10 @@ import { Injectable } from "@angular/core";
 import { io, Socket } from "socket.io-client";
 import { Observable } from "rxjs";
 import { Message } from "../shared/models/message.model";
-import { User } from "../shared/models/user.model";
 import { Room } from "../shared/models/room.model";
-import { environment } from "../../environments/environment";
 import { ResponseDto } from "../shared/dtos/response.dto";
 import { AuthService } from "./auth.service";
+import { environment } from "@environments/environment";
 
 @Injectable({
     providedIn: "root",

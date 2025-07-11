@@ -3,17 +3,17 @@ import { FormsModule } from "@angular/forms";
 import { CommonModule, DatePipe } from "@angular/common";
 import { Message } from "../../shared/models/message.model";
 import { User } from "../../shared/models/user.model";
-import { MessageComponent } from "../message/message.component";
+import { MessageComponent } from "./message/message.component";
 import { AuthService } from "../../services/auth.service";
 import { ChatService } from "../../services/chat.service";
 import { Router } from "@angular/router";
 import { Room } from "../../shared/models/room.model";
 import { ApiService } from "../../services/api.service";
 import { Part } from "../../shared/models/part.model";
-import { IconComponent } from "../icon/icon.component";
+import { IconComponent } from "../core/icon/icon.component";
 import { Media } from "../../shared/models/media.model";
 import { ResponseDto } from "../../shared/dtos/response.dto";
-import { EmojiPickerComponent } from "../emoji-picker/emoji-picker.component";
+import { EmojiPickerComponent } from "./emoji-picker/emoji-picker.component";
 import { ToastrService } from "ngx-toastr";
 
 @Component({

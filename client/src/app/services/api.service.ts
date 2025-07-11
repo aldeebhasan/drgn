@@ -1,9 +1,9 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { lastValueFrom } from "rxjs";
-import { environment } from "../../environments/environment";
 import { Room } from "../shared/models/room.model";
 import { User } from "../shared/models/user.model";
+import { environment } from "@environments/environment";
 
 @Injectable({
     providedIn: "root",

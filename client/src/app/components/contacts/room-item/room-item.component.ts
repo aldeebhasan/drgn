@@ -1,8 +1,7 @@
 import { Component, Input } from "@angular/core";
-import { Room } from "../../shared/models/room.model";
-import { IconComponent } from "../icon/icon.component";
-import { ToastrService } from "ngx-toastr";
 import { CommonModule } from "@angular/common";
+import { IconComponent } from "@app/components/core/icon/icon.component";
+import { Room } from "@app/shared/models/room.model";
 
 @Component({
     selector: "app-room-item",

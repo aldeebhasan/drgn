@@ -1,9 +1,9 @@
 import { Component, Input } from "@angular/core";
-import { Part } from "../../shared/models/part.model";
 import { CommonModule } from "@angular/common";
-import { CastToMediaPipe } from "../../pipes/cast-to-media.pipe";
-import { CastToMessagePipe } from "../../pipes/cast-to-message.pipe";
-import { MediaService } from "../../services/media.service";
+import { CastToMediaPipe } from "@app/pipes/cast-to-media.pipe";
+import { CastToMessagePipe } from "@app/pipes/cast-to-message.pipe";
+import { Part } from "@app/shared/models/part.model";
+import { MediaService } from "@app/services/media.service";
 
 @Component({
     selector: "app-message-part",
