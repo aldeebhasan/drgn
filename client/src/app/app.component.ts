@@ -1,11 +1,11 @@
 import { Component } from "@angular/core";
 import { RouterOutlet } from "@angular/router";
-import { MediaDialogComponent } from "./components/chat/media-dialog/media-dialog.component";
 import { IconComponent } from "./components/core/icon/icon.component";
+import { DialogComponent } from "./components/core/dialog/dialog.component";
 
 @Component({
     selector: "app-root",
-    imports: [RouterOutlet, MediaDialogComponent, IconComponent],
+    imports: [RouterOutlet, IconComponent, DialogComponent],
     templateUrl: "./app.component.html",
 })
 export class AppComponent {}

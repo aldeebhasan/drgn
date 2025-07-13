@@ -37,7 +37,6 @@ export class ContactsComponent implements OnInit {
     }
 
     selectRoom(room: Room) {
-        this.chatService.leaveChat(this.room);
         if (room.has_password) {
             //show modal
         } else {
@@ -46,6 +45,7 @@ export class ContactsComponent implements OnInit {
             this.chatService
                 .joinRoom(room)
                 .then((response) => {
+                    this.chatService.leaveChat(this.room);
                     this.authService.setRoom(response.data.room, response.data.passcode);
                     this.chatService.clear();
                     window.location.reload();

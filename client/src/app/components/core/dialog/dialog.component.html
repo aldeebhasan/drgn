@@ -1,0 +1,17 @@
+<div *ngIf="showDialog" class="dialog-overlay fixed inset-0 z-50 flex items-center justify-center bg-black/70 transition-opacity duration-300 overflow-auto">
+    <div class="dialog-content relative bg-black/20 rounded-lg shadow-xl max-w-[90vw]">
+        <!-- Close button -->
+        <button
+            (click)="close()"
+            class="absolute top-2 right-2 z-10 p-1 rounded-full bg-gray-900 text-white hover:bg-opacity-100 transition-all cursor-pointer"
+            aria-label="Close media dialog"
+        >
+            <app-icon name="close" class="fill-gray-200" />
+        </button>
+
+        <!-- Media content -->
+        <div class="p-4 flex items-center justify-center h-full relative">
+            <ng-container *ngComponentOutlet="childComponent; inputs: inputs"></ng-container>
+        </div>
+    </div>
+</div>

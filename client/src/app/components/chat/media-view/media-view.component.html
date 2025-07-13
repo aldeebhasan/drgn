@@ -1,0 +1,24 @@
+<div>
+    <span class="absolute top-6 left-6">{{ media?.name }}</span>
+    <!-- Image -->
+    <div *ngIf="media?.type === 'image'" class="max-h-[85vh] max-w-[90vw">
+        <img [src]="media?.path" alt="Media content" class="max-h-full max-w-full rounded object-contain" #mediaElement />
+    </div>
+
+    <!-- Video -->
+    <div *ngIf="media?.type === 'video'" class="w-full">
+        <video controls class="max-h-[85vh] max-w-[90vw] rounded" #mediaElement>
+            <source [src]="media?.path" [type]="getVideoType()" />
+            Your browser does not support videos.
+        </video>
+    </div>
+
+    <!-- Audio -->
+    <div *ngIf="media?.type === 'audio'" class="w-full max-w-md">
+        <audio controls class="w-full" #mediaElement>
+            <source [src]="media?.path" [type]="getAudioType()" />
+            Your browser does not support audio.
+        </audio>
+    </div>
+</div>
+>

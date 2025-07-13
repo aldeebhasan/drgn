@@ -3,7 +3,8 @@ import { CommonModule } from "@angular/common";
 import { CastToMediaPipe } from "@app/pipes/cast-to-media.pipe";
 import { CastToMessagePipe } from "@app/pipes/cast-to-message.pipe";
 import { Part } from "@app/shared/models/part.model";
-import { MediaService } from "@app/services/media.service";
+import { DialogService } from "@app/services/dialog.service";
+import { MediaViewComponent } from "../media-view/media-view.component";
 
 @Component({
     selector: "app-message-part",
@@ -14,10 +15,12 @@ export class MessagePartComponent {
     @Input() part: Part = new Part();
     @Input() local: boolean = false;
 
-    constructor(private mediaService: MediaService) {}
+    constructor(private dialogService: DialogService) {}
 
     openModal(event: Event, media: any) {
         event.stopPropagation();
-        this.mediaService.openMediaDialog(media);
+        this.dialogService.open(MediaViewComponent, {
+            media: media,
+        });
     }
 }
