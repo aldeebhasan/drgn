@@ -4,7 +4,7 @@ import { CastToMediaPipe } from "@app/pipes/cast-to-media.pipe";
 import { CastToMessagePipe } from "@app/pipes/cast-to-message.pipe";
 import { Part } from "@app/shared/models/part.model";
 import { DialogService } from "@app/services/dialog.service";
-import { MediaViewComponent } from "../media-view/media-view.component";
+import { MediaDialogComponent } from "../media-dialog/media-dialog.component";
 
 @Component({
     selector: "app-message-part",
@@ -19,7 +19,7 @@ export class MessagePartComponent {
 
     openModal(event: Event, media: any) {
         event.stopPropagation();
-        this.dialogService.open(MediaViewComponent, {
+        this.dialogService.open(MediaDialogComponent, {
             media: media,
         });
     }

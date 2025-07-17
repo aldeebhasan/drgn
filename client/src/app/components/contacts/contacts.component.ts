@@ -10,6 +10,8 @@ import { IconComponent } from "../core/icon/icon.component";
 import { ToSymbolPipe } from "../../pipes/to-symbol.pipe";
 import { RoomItemComponent } from "./room-item/room-item.component";
 import { ToastrService } from "ngx-toastr";
+import { DialogService } from "@app/services/dialog.service";
+import { RoomLoginDialogComponent } from "../chat/room-login-dialog/room-login-dialog.component";
 
 @Component({
     selector: "app-contacts",
@@ -24,7 +26,13 @@ export class ContactsComponent implements OnInit {
     room: Room;
     loading: boolean = false;
 
-    constructor(private authService: AuthService, private chatService: ChatService, private toastrService: ToastrService, private router: Router) {
+    constructor(
+        private authService: AuthService,
+        private chatService: ChatService,
+        private toastrService: ToastrService,
+        private router: Router,
+        private dialogService: DialogService
+    ) {
         this.user = this.authService.user();
         this.room = this.authService.room() as Room;
     }
@@ -38,7 +46,7 @@ export class ContactsComponent implements OnInit {
 
     selectRoom(room: Room) {
         if (room.has_password) {
-            //show modal
+            this.dialogService.open(RoomLoginDialogComponent, { room: room });
         } else {
             room.password = "";
             this.loading = true;

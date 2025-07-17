@@ -38,7 +38,7 @@ export class HomeComponent {
             this.messages.push(this.generateSystemMsg(message));
         });
         this.chatService.onError().subscribe((error) => {
-            this.toastrService.error(error.message);
+            this.toastrService.error(Object.values(error.errors).join(", "), error.message);
         });
     }
 

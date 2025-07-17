@@ -9,7 +9,7 @@ export class Room {
     is_public: boolean = false;
     has_password: boolean = false;
 
-    constructor(data: Partial<Room>) {
+    constructor(data: Partial<Room> = {}) {
         Object.assign(this, data);
     }
 }

@@ -1,0 +1,40 @@
+<div class="p-8 w-full sm:w-96 bg-white">
+    <!-- Join Room Form -->
+    <form [formGroup]="joinForm" (ngSubmit)="joinRoom()" class="space-y-6">
+        <div class="space-y-2">
+            <label class="block text-sm font-medium text-gray-700">
+                Room Code
+                <span class="text-red-600 p-1 text-xs" *ngIf="joinForm?.get('code')?.invalid && joinForm?.get('code')?.touched"> (Code is required) </span>
+            </label>
+            <div class="relative">
+                <input
+                    type="text"
+                    formControlName="code"
+                    readonly
+                    class="cursor-not-allowed w-full px-4 py-3 bg-gray-200 border border-gray-300 rounded-lg text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-50 transition-all tracking-widest"
+                    placeholder="ABCD123456"
+                    maxlength="10"
+                />
+            </div>
+        </div>
+
+        <div class="space-y-2">
+            <label class="block text-sm font-medium text-gray-700">
+                Password
+                <span class="text-red-600 p-1 text-xs" *ngIf="joinForm?.get('password')?.invalid && joinForm?.get('password')?.touched">
+                    (Password is required)
+                </span>
+            </label>
+            <input
+                type="password"
+                formControlName="password"
+                class="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-50 transition-all"
+                placeholder="••••••••"
+            />
+        </div>
+
+        <div class="pt-4">
+            <app-submit-button title="Join" [loading]="loading" hint="Joining room..." />
+        </div>
+    </form>
+</div>

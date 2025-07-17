@@ -15,7 +15,11 @@ export class ChatService {
     private readonly url: string = environment.baseUrl + "/chat";
 
     constructor(private authService: AuthService) {
-        const token = authService.token();
+        this.initSocket();
+    }
+
+    private initSocket() {
+        const token = this.authService.token();
         this.socket = io(this.url, { auth: { token: token } });
     }
 
@@ -116,5 +120,8 @@ export class ChatService {
 
     clear(): void {
         this.socket.removeAllListeners();
+        this.socket?.disconnect();
+
+        this.initSocket();
     }
 }

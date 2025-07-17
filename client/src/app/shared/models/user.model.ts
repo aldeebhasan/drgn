@@ -7,6 +7,7 @@ export class User {
     image: string = "";
     created_at: string = "";
     color: string = "";
+    is_guest: boolean = true;
 
     constructor(data: Partial<User>) {
         Object.assign(this, data);

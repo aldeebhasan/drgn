@@ -8,6 +8,7 @@ import { CommonModule } from "@angular/common";
 import { ToastrService } from "ngx-toastr";
 import { IconComponent } from "../../components/core/icon/icon.component";
 import { SubmitButtonComponent } from "../../components/core/submit-button/submit-button.component";
+import { User } from "@app/shared/models/user.model";
 
 @Component({
     selector: "app-room",
@@ -22,6 +23,7 @@ export class RoomComponent {
     createdRoom?: { room: Room; passcode: string };
     loading = false;
     currentRoom?: Room = undefined;
+    user?: User;
 
     constructor(
         private fb: FormBuilder,
@@ -43,6 +45,8 @@ export class RoomComponent {
         });
 
         this.currentRoom = authService.room();
+        this.user = authService.user();
+        chatService.clear();
     }
 
     joinRoom() {
@@ -109,6 +113,7 @@ export class RoomComponent {
 
     logout() {
         this.authService.logout();
+        this.chatService.clear();
         this.router.navigateByUrl("register");
     }
 }

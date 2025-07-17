@@ -5,7 +5,7 @@
         <button (click)="logout()" class="flex items-center space-x-1 group cursor-pointer" title="Logout">
             <div class="p-2 rounded-full group-hover:bg-red-100 transition-colors text-gray-400 group-hover:text-red-600">
                 <app-icon name="logout" />
-            </div>  
+            </div>
             <span class="text-gray-500 group-hover:text-red-600 transition-colors text-sm font-medium"> Sign Out </span>
         </button>
         <a *ngIf="currentRoom != undefined" href="/chat" class="flex items-center space-x-1 group cursor-pointer" title="Back to room">
@@ -39,9 +39,12 @@
         </div>
 
         <!-- Form container -->
-        <div *ngIf="!createdRoom" class="p-8">
+        <div *ngIf="!createdRoom" class="">
             <!-- Create Room Form -->
-            <form *ngIf="activeTab === 'create'" [formGroup]="createForm" (ngSubmit)="createRoom()" class="space-y-6">
+            <form *ngIf="activeTab === 'create'" [formGroup]="createForm" (ngSubmit)="createRoom()" class="space-y-6 p-8 relative">
+                <div *ngIf="user?.is_guest" class="absolute h-full w-full bg-red-400/50 flex items-center justify-center z-10 top-0 left-0">
+                    <span class="-rotate-45 font-bold text-3xl text-red-500">Not Available For Guests</span>
+                </div>
                 <div class="space-y-2">
                     <label class="block text-sm font-medium text-gray-700">
                         Room Name
@@ -107,7 +110,7 @@
             </form>
 
             <!-- Join Room Form -->
-            <form *ngIf="activeTab === 'join'" [formGroup]="joinForm" (ngSubmit)="joinRoom()" class="space-y-6">
+            <form *ngIf="activeTab === 'join'" [formGroup]="joinForm" (ngSubmit)="joinRoom()" class="space-y-6 p-8">
                 <div class="space-y-2">
                     <label class="block text-sm font-medium text-gray-700">
                         Room Code

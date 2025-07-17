@@ -61,10 +61,14 @@ export class ChatGateway {
     @WsAuth() auth: UserPayload,
   ) {
     let room = await this.roomService.findOneByCode(data.code);
+    const user = await this.userService.findOneOrFail(auth.id);
     if (room) {
       throw new WsException(
         'Room with same name already exist, join it if you want!',
       );
+    }
+    if (user.is_guest) {
+      throw new WsException('Sorry! Guests cannot create rooms');
     }
     room = await this.roomService.create(
       auth.id,

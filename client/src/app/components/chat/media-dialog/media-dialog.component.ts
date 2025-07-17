@@ -5,9 +5,9 @@ import { Media } from "@app/shared/models/media.model";
 @Component({
     selector: "app-media-view",
     imports: [CommonModule],
-    templateUrl: "./media-view.component.html",
+    templateUrl: "./media-dialog.component.html",
 })
-export class MediaViewComponent {
+export class MediaDialogComponent {
     @Input() media?: Media = new Media();
 
     getVideoType(): string {
