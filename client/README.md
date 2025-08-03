@@ -1,7 +1,8 @@
-# Client
+# Drgn Client
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.3.
-
+<p align="center">
+  <a href="drgn-production.up.railway.app/" target="blank"><img src="https://drgn-production.up.railway.app/assets/logo@full.png" width="220" alt="DRGN" /></a>
+</p>
 ## Development server
 
 To start a local development server, run:
